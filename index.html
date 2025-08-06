@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zemo's Vault</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Define custom fonts and base styles */
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0;
+            overflow-x: hidden; /* Prevent horizontal scroll from watermark */
+            position: relative;
+        }
+        .dark body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .light body {
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+        }
+
+        /* Title Font - Swapped */
+        .font-title {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        /* Watermark Font - Swapped */
+        .font-watermark {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Glassmorphism Effect - ENHANCED */
+        .glass-ui {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.5), rgba(30, 30, 30, 0.3));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .light .glass-ui {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1), inset 0 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff8c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00e67e;
+        }
+
+        /* Animated Watermark - Tilted and Faster */
+        #watermark-container {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            overflow: hidden;
+            z-index: -1;
+            transform: rotate(-10deg); /* Added tilt to the container */
+        }
+
+        .watermark-line {
+            position: absolute;
+            left: 0;
+            width: 200%; 
+            font-size: 7vw; /* Increased size */
+            font-weight: 700;
+            white-space: nowrap;
+            user-select: none;
+            color: rgba(0, 255, 140, 0.04);
+        }
+
+        .light .watermark-line {
+            color: rgba(0, 0, 0, 0.03);
+        }
+
+        .watermark-line.move-left {
+            animation: move-left 40s linear infinite; /* Increased speed */
+        }
+
+        .watermark-line.move-right {
+            animation: move-right 40s linear infinite; /* Increased speed */
+        }
+
+        @keyframes move-left {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); } 
+        }
+
+        @keyframes move-right {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); } 
+        }
+
+        /* Code block styling */
+        pre {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            position: relative;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .light pre {
+             background-color: rgba(0, 0, 0, 0.05);
+        }
+        pre code {
+            color: #00ff8c; /* Green code text */
+        }
+        .light pre code {
+            color: #0b7950;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #00ff8c;
+            color: #1a1a1a;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        /* Custom select dropdown styles */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300FF8C%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: .65em auto;
+        }
+        .light select {
+             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+        }
+
+        /* Gemini Modal Styles */
+        #gemini-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #gemini-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #gemini-modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 100%;
+        }
+        
+        /* Loading Spinner */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #00ff8c;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="transition-colors duration-500">
+
+    <!-- Animated Watermark - Updated -->
+    <div id="watermark-container" class="font-watermark">
+        <div class="watermark-line move-left" style="top: 10%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+        <div class="watermark-line move-right" style="top: 25%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+        <div class="watermark-line move-left" style="top: 40%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+        <div class="watermark-line move-right" style="top: 55%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+        <div class="watermark-line move-left" style="top: 70%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+        <div class="watermark-line move-right" style="top: 85%;">
+            zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-8 relative z-10">
+        
+        <!-- Header -->
+        <header class="relative text-center mb-8">
+            <h1 class="font-title text-3xl md:text-5xl tracking-wider text-white dark:text-white light:text-black transition-colors duration-500">
+                Zemo's Vault <span class="text-[#00ff8c]">🧠</span>
+            </h1>
+            <!-- Theme Toggle -->
+            <label for="theme-toggle" class="cursor-pointer absolute top-1/2 -translate-y-1/2 right-0">
+                <input type="checkbox" id="theme-toggle" class="sr-only peer">
+                <div class="relative w-14 h-8 bg-gray-600 rounded-full peer-checked:bg-gray-200 transition-colors">
+                    <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-transform peer-checked:translate-x-full peer-checked:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 m-1 text-gray-700 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 m-1 text-white peer-checked:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    </div>
+                </div>
+            </label>
+        </header>
+
+        <!-- Selection UI -->
+        <div id="selector-ui" class="glass-ui p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Year Selector -->
+                <div>
+                    <label for="year-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Academic Year</label>
+                    <select id="year-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition">
+                        <option>Select Year</option>
+                    </select>
+                </div>
+                <!-- Subject Selector -->
+                <div>
+                    <label for="subject-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Subject</label>
+                    <select id="subject-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition" disabled>
+                        <option>Select Subject</option>
+                    </select>
+                </div>
+                <!-- Experiment Selector -->
+                <div>
+                    <label for="exp-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Experiment</label>
+                    <select id="exp-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition" disabled>
+                        <option>Select Experiment</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experiment Display Area -->
+        <div id="experiment-display" class="min-h-[400px]">
+            <div id="placeholder" class="text-center text-gray-500 mt-20">
+                <p>Please make a selection to view an experiment.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Gemini API Modal -->
+    <div id="gemini-modal">
+        <div class="glass-ui p-6 w-11/12 md:w-3/4 lg:w-1/2 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl font-bold">&times;</button>
+            <div id="gemini-modal-content">
+                <!-- Content will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA ---
+        const labData = {
+            "1st Year": {
+                "PPL Lab": {},
+                "Python": {}
+            },
+            "2nd Year": {
+                "Java": {},
+                "DSA": {},
+                "OS": {},
+                "DBMS": {}
+            },
+            "3rd Year": {
+                "Computer Networks": {
+                    "exp1": {
+                        title: "1. Data Link Layer Framing",
+                        parts: [
+                            {
+                                subtitle: "Character Stuffing",
+                                code: `#include <stdio.h>\n#include <string.h>\n\nint main()\n{\n    int i = 0, j = 0, n, pos;\n    char a[20], b[50], ch;\n\n    printf("Enter string:\\n");\n    scanf("%s", a);\n\n    n = strlen(a);\n\n    printf("Enter position to stuff the character:\\n");\n    scanf("%d", &pos);\n\n    if (pos > n || pos <= 0)\n    {\n        printf("Invalid position.\\n");\n        return 1; // Exit if position is invalid\n    }\n\n    printf("Enter the character to stuff:\\n");\n    scanf(" %c", &ch);\n\n    // Copy characters before the stuffing position\n    for(i = 0; i < pos - 1; i++) {\n        b[j++] = a[i];\n    }\n\n    // Add the stuffing sequence\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n    b[j++] = ch;\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n\n    // Copy the rest of the string\n    for(i = pos - 1; i < n; i++) {\n        b[j++] = a[i];\n    }\n\n    b[j] = '\\0';\n\n    printf("\\nString after character stuffing:\\n");\n    printf("%s\\n", b);\n\n    return 0;\n}`,
+                                output: `Enter string:\nzemo\nEnter position to stuff the character:\n3\nEnter the character to stuff:\nx\n\nString after character stuffing:\nze-dlex-dlemo`
+                            },
+                            {
+                                subtitle: "Bit Stuffing",
+                                code: `#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char data[100];\n    char stuffed_data[200];\n    int i, j, count;\n\n    printf("Enter binary data: ");\n    scanf("%s", data);\n\n    i = 0; // Index for input data\n    j = 0; // Index for stuffed_data\n    count = 0; // To count consecutive 1s\n\n    while(data[i] != '\\0') {\n        stuffed_data[j] = data[i];\n        if(data[i] == '1') {\n            count++;\n        } else {\n            count = 0;\n        }\n\n        if(count == 5) {\n            j++; // Move to next position\n            stuffed_data[j] = '0'; // Stuff a '0'\n            count = 0; // Reset the count\n        }\n        i++;\n        j++;\n    }\n    stuffed_data[j] = '\\0'; // Null terminate the stuffed string\n\n    printf("Original Data: %s\\n", data);\n    printf("Stuffed Data:  01111110 %s 01111110\\n", stuffed_data);\n\n    return 0;\n}`,
+                                output: `Enter binary data: 011011111111111111110110\nOriginal Data: 011011111111111111110110\nStuffed Data:  01111110 01101111101111101111101111100110 01111110`
+                            }
+                        ]
+                    },
+                    "exp2": {
+                        title: "2. Cyclic Redundancy Check (CRC)",
+                        parts: [{
+                            code: `#include <stdio.h>\n#include <string.h>\n\n#define N strlen(gen_poly)\n\nchar data[28];\nchar check_value[28];\nchar gen_poly[10];\nint data_length, i, j;\n\nvoid XOR() {\n    for (j = 1; j < N; j++)\n        check_value[j] = ((check_value[j] == gen_poly[j]) ? '0' : '1');\n}\n\nvoid crc() {\n    for (i = 0; i < N; i++)\n        check_value[i] = data[i];\n    do {\n        if (check_value[0] == '1')\n            XOR();\n        for (j = 0; j < N - 1; j++)\n            check_value[j] = check_value[j + 1];\n        check_value[j] = data[i++];\n    } while (i <= data_length + N - 1);\n}\n\nint main() {\n    printf("Enter data to be transmitted: ");\n    scanf("%s", data);\n    printf("Enter the generator polynomial: ");\n    scanf("%s", gen_poly);\n    data_length = strlen(data);\n    for (i = data_length; i < data_length + N - 1; i++)\n        data[i] = '0';\n    data[i] = '\\0';\n    crc();\n    for (i = data_length; i < data_length + N - 1; i++)\n        data[i] = check_value[i - data_length];\n    data[i] = '\\0';\n    printf("Final data to be sent: %s\\n", data);\n    return 0;\n}`,
+                            output: `Enter data to be transmitted: 100100\nEnter the generator polynomial: 1101\nFinal data to be sent: 100100001`
+                        }]
+                    },
+                    "exp3": {
+                        title: "3. Go-Back-N Sliding Window Protocol",
+                        parts: [{
+                            code: `#include <stdio.h>\n#include <stdlib.h>\n#include <time.h>\n\nint main() {\n    int window_size, total_frames, frames_sent = 0;\n    int i, ack;\n    srand(time(NULL));\n\n    printf("Enter window size: ");\n    scanf("%d", &window_size);\n    printf("Enter total number of frames to send: ");\n    scanf("%d", &total_frames);\n\n    while (frames_sent < total_frames) {\n        for (i = 0; i < window_size; i++) {\n            if (frames_sent + i < total_frames) {\n                printf("Sent Frame %d\\n", frames_sent + i + 1);\n            }\n        }\n        ack = frames_sent + 1 + (rand() % (window_size + 1));\n        if (ack > total_frames) ack = total_frames + 1;\n        if (ack == frames_sent + 1) {\n            printf("-> ACK for Frame %d NOT received. Resending window.\\n\\n", ack);\n        } else {\n            printf("-> ACK for Frame %d received. Frames up to %d acknowledged.\\n\\n", ack - 1, ack - 1);\n            frames_sent = ack - 1;\n        }\n    }\n    printf("All frames sent successfully.\\n");\n    return 0;\n}`,
+                            output: `(Output is non-deterministic due to random ACK generation)\nEnter window size: 4\nEnter total number of frames to send: 10\n...`
+                        }]
+                    },
+                    "exp4": {
+                        title: "4. Dijkstra's Shortest Path Algorithm",
+                        parts: [{
+                            code: `#include <stdio.h>\n#define INFINITY 9999\n#define MAX 10\n\nvoid dijkstra(int G[MAX][MAX], int n, int startnode);\n\nint main() {\n    int G[MAX][MAX], i, j, n, u;\n    printf("Enter no. of vertices: ");\n    scanf("%d", &n);\n    printf("\\nEnter the adjacency matrix:\\n");\n    for (i = 0; i < n; i++)\n        for (j = 0; j < n; j++)\n            scanf("%d", &G[i][j]);\n    printf("\\nEnter the starting node: ");\n    scanf("%d", &u);\n    dijkstra(G, n, u);\n    return 0;\n}\n\nvoid dijkstra(int G[MAX][MAX], int n, int startnode) {\n    int cost[MAX][MAX], distance[MAX], pred[MAX];\n    int visited[MAX], count, mindistance, nextnode, i, j;\n    for (i = 0; i < n; i++)\n        for (j = 0; j < n; j++)\n            cost[i][j] = (G[i][j] == 0) ? INFINITY : G[i][j];\n    for (i = 0; i < n; i++) {\n        distance[i] = cost[startnode][i];\n        pred[i] = startnode;\n        visited[i] = 0;\n    }\n    distance[startnode] = 0;\n    visited[startnode] = 1;\n    count = 1;\n    while (count < n - 1) {\n        mindistance = INFINITY;\n        for (i = 0; i < n; i++)\n            if (distance[i] < mindistance && !visited[i]) {\n                mindistance = distance[i];\n                nextnode = i;\n            }\n        visited[nextnode] = 1;\n        for (i = 0; i < n; i++)\n            if (!visited[i] && (mindistance + cost[nextnode][i] < distance[i])) {\n                distance[i] = mindistance + cost[nextnode][i];\n                pred[i] = nextnode;\n            }\n        count++;\n    }\n    for (i = 0; i < n; i++)\n        if (i != startnode) {\n            printf("\\nDistance of node %d = %d. Path = %d", i, distance[i], i);\n            j = i;\n            do {\n                j = pred[j];\n                printf(" <- %d", j);\n            } while (j != startnode);\n        }\n    printf("\\n");\n}`,
+                            output: `Enter no. of vertices: 5\n\nEnter the adjacency matrix:\n0 10 0 30 100\n10 0 50 0 0\n0 50 0 20 10\n30 0 20 0 60\n100 0 10 60 0\n\nEnter the starting node: 0\n\nDistance of node 1 = 10. Path = 1 <- 0\nDistance of node 2 = 50. Path = 2 <- 3 <- 0\nDistance of node 3 = 30. Path = 3 <- 0\nDistance of node 4 = 60. Path = 4 <- 2 <- 3 <- 0`
+                        }]
+                    },
+                    "exp5": {
+                        title: "6. Distance Vector Routing Algorithm",
+                        parts: [{
+                            code: `#include <stdio.h>\n\nstruct node {\n    unsigned dist[20];\n    unsigned from[20];\n} rt[10];\n\nint main() {\n    int costmat[20][20];\n    int nodes, i, j, k, count = 0;\n    printf("Enter the number of nodes: ");\n    scanf("%d", &nodes);\n    printf("Enter the cost matrix:\\n");\n    for (i = 0; i < nodes; i++) {\n        for (j = 0; j < nodes; j++) {\n            scanf("%d", &costmat[i][j]);\n            costmat[i][i] = 0;\n            rt[i].dist[j] = costmat[i][j];\n            rt[i].from[j] = j;\n        }\n    }\n    do {\n        count = 0;\n        for (i = 0; i < nodes; i++)\n            for (j = 0; j < nodes; j++)\n                for (k = 0; k < nodes; k++)\n                    if (rt[i].dist[j] > costmat[i][k] + rt[k].dist[j]) {\n                        rt[i].dist[j] = rt[i].dist[k] + rt[k].dist[j];\n                        rt[i].from[j] = k;\n                        count++;\n                    }\n    } while (count != 0);\n    for (i = 0; i < nodes; i++) {\n        printf("\\nRouting table for router %d\\n", i + 1);\n        printf("Node\\tVia\\tDistance\\n");\n        for (j = 0; j < nodes; j++) {\n            printf("%d\\t%d\\t%d\\n", j + 1, rt[i].from[j] + 1, rt[i].dist[j]);\n        }\n    }\n    printf("\\n");\n    return 0;\n}`,
+                            output: `Enter the number of nodes: 3\nEnter the cost matrix:\n0 2 7\n2 0 1\n7 1 0\n\nRouting table for router 1\nNode  Via  Distance\n1     1    0\n2     2    2\n3     2    3\n\nRouting table for router 2\nNode  Via  Distance\n1     1    2\n2     2    0\n3     3    1\n\nRouting table for router 3\nNode  Via  Distance\n1     2    3\n2     2    1\n3     3    0`
+                        }]
+                    },
+                    "exp6": {
+                        title: "7. Data Encryption and Decryption",
+                        parts: [{
+                            code: `#include<stdio.h>\n\nint main() {\n    char message[100], ch;\n    int i, key;\n    printf("Enter a message to encrypt: ");\n    gets(message);\n    printf("Enter key (1-25): ");\n    scanf("%d", &key);\n\n    // Encryption\n    for(i = 0; message[i] != '\\0'; ++i){\n        ch = message[i];\n        if(ch >= 'a' && ch <= 'z'){\n            ch = ch + key;\n            if(ch > 'z') ch = ch - 'z' + 'a' - 1;\n            message[i] = ch;\n        }\n        else if(ch >= 'A' && ch <= 'Z'){\n            ch = ch + key;\n            if(ch > 'Z') ch = ch - 'Z' + 'A' - 1;\n            message[i] = ch;\n        }\n    }\n    printf("Encrypted message: %s\\n", message);\n\n    // Decryption\n    for(i = 0; message[i] != '\\0'; ++i){\n        ch = message[i];\n        if(ch >= 'a' && ch <= 'z'){\n            ch = ch - key;\n            if(ch < 'a') ch = ch + 'z' - 'a' + 1;\n            message[i] = ch;\n        }\n        else if(ch >= 'A' && ch <= 'Z'){\n            ch = ch - key;\n            if(ch < 'A') ch = ch + 'Z' - 'A' + 1;\n            message[i] = ch;\n        }\n    }\n    printf("Decrypted message: %s\\n", message);\n    return 0;\n}`,
+                            output: `Enter a message to encrypt: HelloWorld\nEnter key (1-25): 4\nEncrypted message: LippsAsvph\nDecrypted message: HelloWorld`
+                        }]
+                    },
+                    "exp7": {
+                        title: "8. Leaky Bucket Algorithm",
+                        parts: [{
+                            code: `#include<stdio.h>\n\nint main() {\n    int bucket_size, output_rate;\n    int packets_rem = 0, i, n;\n    int packets[10];\n\n    printf("Enter bucket size: ");\n    scanf("%d", &bucket_size);\n    printf("Enter output rate: ");\n    scanf("%d", &output_rate);\n    printf("Enter number of incoming packets: ");\n    scanf("%d", &n);\n    printf("Enter incoming packet sizes:\\n");\n    for(i = 0; i < n; i++) scanf("%d", &packets[i]);\n\n    printf("\\nTime\\tPkt Size\\tPkt Rcvd\\tPkt Sent\\tPkt Rem\\n");\n    printf("----------------------------------------------------------\\n");\n\n    for(i = 0; i < n; i++) {\n        printf("%d\\t%d\\t\\t", i + 1, packets[i]);\n        if ((packets[i] + packets_rem) > bucket_size) {\n            printf("Dropped\\t\\t");\n        } else {\n            packets_rem += packets[i];\n            printf("%d\\t\\t", packets_rem);\n        }\n        int sent = (packets_rem < output_rate) ? packets_rem : output_rate;\n        printf("%d\\t\\t", sent);\n        packets_rem -= sent;\n        printf("%d\\n", packets_rem);\n    }\n    return 0;\n}`,
+                            output: `Enter bucket size: 10\nEnter output rate: 2\nEnter number of incoming packets: 4\nEnter incoming packet sizes:\n4 5 3 6\n\nTime  Pkt Size  Pkt Rcvd  Pkt Sent  Pkt Rem\n----------------------------------------------------------\n1     4         4         2         2\n2     5         7         2         5\n3     3         8         2         6\n4     6         Dropped   2         4`
+                        }]
+                    },
+                    "exp8": {
+                        title: "9. Buffer Sorting Techniques",
+                        parts: [{
+                            code: `#include <stdio.h>\n\nvoid bubble_sort(int buffer[], int n) {\n    int i, j, temp;\n    for (i = 0; i < n - 1; i++) {\n        for (j = 0; j < n - i - 1; j++) {\n            if (buffer[j] > buffer[j + 1]) {\n                temp = buffer[j];\n                buffer[j] = buffer[j + 1];\n                buffer[j + 1] = temp;\n            }\n        }\n    }\n}\n\nint main() {\n    int buffer[100], n, i;\n    printf("Enter number of packets in buffer (max 100): ");\n    scanf("%d", &n);\n    printf("Enter packet priorities (as integers):\\n");\n    for (i = 0; i < n; i++) scanf("%d", &buffer[i]);\n\n    bubble_sort(buffer, n);\n\n    printf("Sorted buffer (by priority):\\n");\n    for (i = 0; i < n; i++) printf("%d ", buffer[i]);\n    printf("\\n");\n\n    return 0;\n}`,
+                            output: `Enter number of packets in buffer (max 100): 6\nEnter packet priorities (as integers):\n5 2 8 1 9 4\nSorted buffer (by priority):\n1 2 4 5 8 9`
+                        }]
+                    },
+                    "exp9": {
+                        title: "10. Wireshark",
+                        parts: [{
+                            code: `// Wireshark is a graphical network protocol analyzer, not a C program.\n// Below are the steps to use it.\n\n### What is Wireshark?\nWireshark is a powerful open-source tool used for network troubleshooting, analysis, software and communications protocol development, and education. It captures data packets in real time and displays them in human-readable format.\n\n### How to Use Wireshark:\n1.  **Installation:** Download and install Wireshark from the official website (wireshark.org).\n2.  **Select an Interface:** Open Wireshark. You will see a list of network interfaces (e.g., 'Ethernet', 'Wi-Fi'). Double-click the interface you want to monitor.\n3.  **Packet Capture:** Wireshark will immediately start capturing all packets on that interface. You'll see a real-time list of packets.\n4.  **Stop Capture:** Click the red square 'Stop' button in the toolbar when you have captured enough data.\n5.  **Analysis & Filters:**\n    - The top pane shows a list of all captured packets with summary info.\n    - The middle pane shows the protocol details of the selected packet.\n    - The bottom pane shows the raw data of the packet in hexadecimal and ASCII.\n    - Use the filter bar at the top to find specific packets. For example, type \`http\` to see only HTTP traffic, or \`ip.addr == 8.8.8.8\` to see packets to/from that IP address.`,
+                            output: "This experiment involves using the Wireshark application. There is no direct code output. Follow the steps in the 'Code' section to perform the experiment."
+                        }]
+                    },
+                    "exp10": {
+                        title: "11. Nmap (OS Detection)",
+                        parts: [{
+                            code: `// Nmap (Network Mapper) is a command-line tool, not a C program.\n// Below are the steps to use it for OS detection.\n\n### What is Nmap?\nNmap is a free and open-source utility for network discovery and security auditing. It uses raw IP packets to determine what hosts are available on the network, what services those hosts are offering, what operating systems they are running, and dozens of other characteristics.\n\n### How to run an Nmap scan for OS Detection:\n1.  **Installation:** Install Nmap from the official website (nmap.org).\n2.  **Open Terminal/Command Prompt:** Nmap is run from the command line.\n3.  **Run the Scan:** To detect the operating system of a target, use the \`-O\` flag. You must have administrative/root privileges to perform this scan.\n    - **Command:** \`sudo nmap -O <target_ip_or_hostname>\`\n    - **Example:** \`sudo nmap -O 192.168.1.1\` or \`sudo nmap -O scanme.nmap.org\`\n4.  **Analyze Output:** Nmap will perform a series of tests and provide a report. The OS detection section will give its best guess for the target's operating system, including the vendor, OS family, and version.`,
+                            output: "This experiment involves using the Nmap command-line tool. There is no direct code output. Follow the steps in the 'Code' section to perform the experiment."
+                        }]
+                    },
+                    "exp11": {
+                        title: "12. NS2 Simulator",
+                        parts: [{
+                            code: `// NS2 (Network Simulator 2) is a discrete event simulator, not a single C program.\n// It uses OTcl scripts to define network topologies and traffic.\n\n### What is NS2?\nNS2 is a popular open-source simulation tool designed specifically for research in computer communication networks. It provides substantial support for simulating routing, multicast protocols, and IP protocols, such as UDP, TCP, etc.\n\n### Simulating with NS2 (Conceptual Steps):\n1.  **Write a TCL Script (.tcl):** You define the entire simulation in a TCL script.\n    - Create a simulator object.\n    - Define nodes and links (the network topology).\n    - Set up traffic agents (e.g., TCP, UDP) and attach them to nodes.\n    - Define applications (e.g., FTP for bulk data transfer) over the traffic agents.\n    - Schedule events (e.g., when the FTP should start and stop).\n    - Define tracing to record packet events to a trace file (.tr).\n2.  **Run the Simulation:** Execute the script using the \`ns\` command: \`ns your_script.tcl\`\n3.  **Analyze the Trace File:** The trace file contains detailed, line-by-line information about every packet event (enqueue, dequeue, drop, receive). You write scripts (using AWK, Perl, or Python) to parse this file to calculate:\n    - Number of packets dropped (due to TCP/UDP, congestion, etc.)\n    - Data Rate & Throughput\n    - Performance metrics like end-to-end delay.`,
+                            output: "This experiment involves writing TCL scripts and using the NS2 simulator. There is no direct C code output. The process involves scripting, simulation, and analysis of trace files."
+                        }]
+                    }
+                },
+                "DevOps": {}
+            }
+        };
+
+        // --- DOM ELEMENTS ---
+        const yearSelect = document.getElementById('year-select');
+        const subjectSelect = document.getElementById('subject-select');
+        const expSelect = document.getElementById('exp-select');
+        const experimentDisplay = document.getElementById('experiment-display');
+        const placeholder = document.getElementById('placeholder');
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlEl = document.documentElement;
+        const geminiModal = document.getElementById('gemini-modal');
+        const geminiModalContent = document.getElementById('gemini-modal-content');
+
+
+        // --- FUNCTIONS ---
+
+        function populateSelect(selectElement, options, defaultText) {
+            selectElement.innerHTML = `<option>${defaultText}</option>`;
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                selectElement.appendChild(optionElement);
+            });
+        }
+        
+        function populateExperimentSelect(experiments) {
+             expSelect.innerHTML = `<option>Select Experiment</option>`;
+             if (Object.keys(experiments).length === 0) {
+                expSelect.innerHTML = `<option>No experiments yet</option>`;
+                expSelect.disabled = true;
+                return;
+             }
+             expSelect.disabled = false;
+             for (const key in experiments) {
+                const optionElement = document.createElement('option');
+                optionElement.value = key;
+                optionElement.textContent = experiments[key].title;
+                expSelect.appendChild(optionElement);
+             }
+        }
+
+        function displayExperiment(expData) {
+            placeholder.style.display = 'none';
+            const selectedExpKey = expSelect.value;
+            
+            let contentHTML = `<div class="glass-ui p-6 animate-fade-in">
+                                 <h2 class="text-2xl font-bold text-[#00ff8c] mb-4">${expData.title}</h2>`;
+
+            expData.parts.forEach((part, index) => {
+                contentHTML += `
+                    <div class="pt-4 mt-4 border-t border-gray-700/50">
+                        ${part.subtitle ? `<h3 class="text-xl font-semibold text-green-300 mb-3">${part.subtitle}</h3>` : ''}
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold mb-2">Code / Description</h4>
+                            <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>${escapeHtml(part.code)}</code></pre>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold mb-2">Expected Output / Instructions</h4>
+                            <pre><code class="text-gray-300 light:text-gray-600">${escapeHtml(part.output)}</code></pre>
+                        </div>
+
+                        <!-- Gemini API Buttons -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                            <button onclick="handleGeminiAction('${selectedExpKey}', ${index}, 'explain')" class="w-full text-center p-3 bg-[#00ff8c] text-black font-bold rounded-lg hover:bg-opacity-80 transition">✨ Explain Code</button>
+                            <button onclick="handleGeminiAction('${selectedExpKey}', ${index}, 'viva')" class="w-full text-center p-3 bg-[#00ff8c] text-black font-bold rounded-lg hover:bg-opacity-80 transition">✨ Viva Questions</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentHTML += `</div>`;
+            experimentDisplay.innerHTML = contentHTML;
+        }
+        
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code');
+            const textArea = document.createElement('textarea');
+            textArea.value = code.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.backgroundColor = '#11a664';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '#00ff8c';
+            }, 2000);
+        }
+
+        function toggleTheme() {
+            const isDark = htmlEl.classList.toggle('dark');
+            htmlEl.classList.toggle('light', !isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.checked = !isDark;
+        }
+
+        // --- GEMINI API INTEGRATION ---
+
+        function showModal() {
+            geminiModal.classList.add('show');
+        }
+
+        function closeModal() {
+            geminiModal.classList.remove('show');
+            geminiModalContent.innerHTML = '';
+        }
+        
+        function showLoading() {
+            geminiModalContent.innerHTML = '<div class="flex justify-center items-center h-48"><div class="loader"></div></div>';
+            showModal();
+        }
+
+        async function callGemini(prompt, maxRetries = 3) {
+            showLoading();
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }]
+            };
+
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const result = await response.json();
+                    
+                    if (result.candidates?.[0]?.content?.parts?.[0]) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        return text; // Return the text for the caller to handle
+                    } else {
+                         throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${attempt + 1} failed:`, error);
+                    attempt++;
+                    if (attempt >= maxRetries) {
+                        geminiModalContent.innerHTML = `<h2 class="text-xl text-red-400">Error</h2><p>Failed to get a response from the AI assistant. Please try again later.</p>`;
+                        return null;
+                    } else {
+                        const delay = Math.pow(2, attempt) * 1000;
+                        await new Promise(res => setTimeout(res, delay));
+                    }
+                }
+            }
+        }
+
+        function handleGeminiAction(expKey, partIndex, action) {
+            const expData = labData[yearSelect.value][subjectSelect.value][expKey];
+            const part = expData.parts[partIndex];
+            const title = `${expData.title}${part.subtitle ? ` - ${part.subtitle}` : ''}`;
+            const content = part.code;
+            let prompt = "";
+
+            switch (action) {
+                case 'explain':
+                    prompt = `You are an expert computer networks professor. Explain the following code/concept for the experiment titled "${title}" in a clear, easy-to-understand way for a university student. Use markdown for formatting. Here is the content:\n\n\`\`\`\n${content}\n\`\`\``;
+                    break;
+                case 'viva':
+                     prompt = `You are a computer networks lab examiner. Based on the following code/concept for the experiment "${title}", generate 5-7 insightful viva voce questions. For each question, provide a brief, ideal answer. Format the questions and answers clearly using markdown. Here is the content:\n\n\`\`\`\n${content}\n\`\`\``;
+                    break;
+            }
+            
+            callGemini(prompt).then(text => {
+                if (text) {
+                    const htmlResult = text
+                        .replace(/```c/g, '<pre class="bg-gray-800 p-2 rounded mt-2"><code>')
+                        .replace(/```/g, '</code></pre>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                    geminiModalContent.innerHTML = `<h2 class="text-2xl font-bold text-[#00ff8c] mb-4">AI Assistant says:</h2><div class="text-left">${htmlResult}</div>`;
+                }
+            });
+        }
+
+        // --- EVENT LISTENERS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                themeToggle.checked = true;
+            } else {
+                themeToggle.checked = false;
+            }
+            const years = Object.keys(labData);
+            populateSelect(yearSelect, years, 'Select Year');
+        });
+
+        yearSelect.addEventListener('change', () => {
+            const selectedYear = yearSelect.value;
+            subjectSelect.disabled = true;
+            expSelect.disabled = true;
+            subjectSelect.innerHTML = '<option>Select Subject</option>';
+            expSelect.innerHTML = '<option>Select Experiment</option>';
+            experimentDisplay.innerHTML = '';
+            placeholder.style.display = 'block';
+            if (labData[selectedYear] && Object.keys(labData[selectedYear]).length > 0) {
+                const subjects = Object.keys(labData[selectedYear]);
+                populateSelect(subjectSelect, subjects, 'Select Subject');
+                subjectSelect.disabled = false;
+            }
+        });
+
+        subjectSelect.addEventListener('change', () => {
+            const selectedYear = yearSelect.value;
+            const selectedSubject = subjectSelect.value;
+            expSelect.disabled = true;
+            expSelect.innerHTML = '<option>Select Experiment</option>';
+            experimentDisplay.innerHTML = '';
+            placeholder.style.display = 'block';
+            if (labData[selectedYear]?.[selectedSubject]) {
+                const experiments = labData[selectedYear][selectedSubject];
+                populateExperimentSelect(experiments);
+            }
+        });
+
+        expSelect.addEventListener('change', () => {
+            const selectedYear = yearSelect.value;
+            const selectedSubject = subjectSelect.value;
+            const selectedExpKey = expSelect.value;
+            if (labData[selectedYear]?.[selectedSubject]?.[selectedExpKey]) {
+                const expData = labData[selectedYear][selectedSubject][selectedExpKey];
+                displayExperiment(expData);
+            } else {
+                experimentDisplay.innerHTML = '';
+                placeholder.style.display = 'block';
+            }
+        });
+        
+        themeToggle.addEventListener('change', toggleTheme);
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && geminiModal.classList.contains('show')) {
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
