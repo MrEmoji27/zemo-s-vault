@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zemo's Vault</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -168,31 +166,30 @@
              background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
         }
 
-        /* Gemini Modal Styles */
+        /* --- Modals, Loaders, Toasts --- */
         #gemini-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        #gemini-modal.show {
-            opacity: 1;
-            visibility: visible;
+        #gemini-modal.show { opacity: 1; visibility: visible; }
+        #gemini-modal-content { max-height: 80vh; overflow-y: auto; width: 100%; }
+        .loader {
+            width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: #00ff8c;
+            border-radius: 50%; display: inline-block; box-sizing: border-box;
+            animation: rotation 1s linear infinite;
         }
-        #gemini-modal-content {
-            max-height: 80vh;
-            overflow-y: auto;
-            width: 100%;
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #toast-container { position: fixed; bottom: 1rem; right: 1rem; z-index: 2000; display: flex; flex-direction: column; gap: 0.5rem; }
+        .toast {
+            padding: 0.75rem 1.25rem; color: #1a1a1a; background-color: #00ff8c;
+            border-radius: 0.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: slide-in 0.3s ease-out;
         }
+        @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
         
         /* Visualizer Styles */
         #visualizer-modal-content {
@@ -247,22 +244,6 @@
             margin-top: 1rem;
         }
         
-        /* Loading Spinner */
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: #00ff8c;
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
 
         /* Arcade Styles */
         #arcade-section {
@@ -294,6 +275,17 @@
             font-size: 3rem;
             cursor: pointer;
             color: #00ff8c;
+            transform: scale(1);
+            transition: transform 0.2s ease;
+        }
+        /* ADDED: Animation for Tic Tac Toe */
+        .tic-tac-toe-cell.pop {
+            animation: pop-in 0.3s ease-out;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
         }
 
         /* 2048 Styles */
@@ -310,12 +302,20 @@
             border: 2px solid #00ff8c;
             border-radius: 0.5rem;
             padding: 10px;
+            position: relative;
         }
         .grid-cell-2048 {
             width: 80px;
             height: 80px;
             background-color: rgba(255,255,255,0.1);
             border-radius: 0.5rem;
+        }
+        #tiles-2048 {
+             position: absolute;
+             top: 10px;
+             left: 10px;
+             right: 10px;
+             bottom: 10px;
         }
         .tile-2048 {
             position: absolute;
@@ -327,13 +327,68 @@
             align-items: center;
             font-size: 2rem;
             font-weight: bold;
-            transition: all 0.1s ease-in-out;
+            /* UPDATED: Smoother transition */
+            transition: top 0.2s ease-in-out, left 0.2s ease-in-out;
+            color: #1a1a1a;
         }
+        /* Tile color styles */
+        [data-value="2"] { background-color: #eee4da; }
+        [data-value="4"] { background-color: #ede0c8; }
+        [data-value="8"] { background-color: #f2b179; color: #f9f6f2; }
+        [data-value="16"] { background-color: #f59563; color: #f9f6f2; }
+        [data-value="32"] { background-color: #f67c5f; color: #f9f6f2; }
+        [data-value="64"] { background-color: #f65e3b; color: #f9f6f2; }
+        [data-value="128"] { background-color: #edcf72; color: #f9f6f2; }
+        [data-value="256"] { background-color: #edcc61; color: #f9f6f2; }
+        [data-value="512"] { background-color: #edc850; color: #f9f6f2; }
+        [data-value="1024"] { background-color: #edc53f; color: #f9f6f2; }
+        [data-value="2048"] { background-color: #edc22e; color: #f9f6f2; }
+
+        /* ADDED: Animations for 2048 tiles */
+        .tile-new {
+            animation: tile-spawn 0.2s ease;
+        }
+        .tile-merged {
+            animation: tile-merge 0.2s ease;
+        }
+        @keyframes tile-spawn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        @keyframes tile-merge {
+            from { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            to { transform: scale(1); }
+        }
+        
+        /* --- NEW: Snake Styles --- */
+        #game-snake-board {
+            display: grid; border: 2px solid #00ff8c;
+            margin: 10px auto; background-color: rgba(0,0,0,0.3);
+        }
+        .snake-pixel { background-color: rgba(255,255,255,0.1); transition: background-color 0.1s linear; }
+        .snake-body { background-color: #00ff8c; }
+        .snake-food { background-color: #ff8c00; border-radius: 50%; transform: scale(1.1); }
+
+        /* --- NEW: Minesweeper Styles --- */
+        #game-minesweeper-board { display: grid; gap: 2px; margin: 10px auto; background-color: #333; }
+        .mine-cell {
+            width: 30px; height: 30px; background-color: rgba(0,0,0,0.3); border: 1px solid #444;
+            display: flex; justify-content: center; align-items: center; font-weight: bold;
+            cursor: pointer; user-select: none;
+        }
+        .mine-cell.revealed { background-color: rgba(255,255,255,0.1); border-color: #222; }
+        .mine-cell .flag-emoji { display: none; }
+        .mine-cell.flagged .flag-emoji { display: block; font-style: normal; }
+        [data-mines="1"] { color: #0094ff; } [data-mines="2"] { color: #00ff8c; } [data-mines="3"] { color: #ff5e57; }
+        [data-mines="4"] { color: #af00ff; } [data-mines="5"] { color: #ffc400; } [data-mines="6"] { color: #00d9e9; }
+        [data-mines="8"] { color: #aaaaaa; }
+
+
     </style>
 </head>
 <body class="transition-colors duration-500">
 
-    <!-- Animated Watermark - Updated -->
     <div id="watermark-container" class="font-watermark">
         <div class="watermark-line move-left" style="top: 10%;">
             zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
@@ -354,15 +409,15 @@
             zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo zemo 
         </div>
     </div>
+    
+    <div id="toast-container"></div>
 
     <div class="container mx-auto p-4 md:p-8 relative z-10">
         
-        <!-- Header -->
         <header class="relative text-center mb-8">
             <h1 class="font-title text-3xl md:text-5xl tracking-wider text-white dark:text-white light:text-black transition-colors duration-500">
                 Zemo's Vault <span id="brain-emoji" class="cursor-pointer">🧠</span>
             </h1>
-            <!-- Theme Toggle -->
             <label for="theme-toggle" class="cursor-pointer absolute top-1/2 -translate-y-1/2 right-0">
                 <input type="checkbox" id="theme-toggle" class="sr-only peer">
                 <div class="relative w-14 h-8 bg-gray-600 rounded-full peer-checked:bg-gray-200 transition-colors">
@@ -374,24 +429,20 @@
             </label>
         </header>
 
-        <!-- Selection UI -->
         <div id="selector-ui" class="glass-ui p-6 mb-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Year Selector -->
                 <div>
                     <label for="year-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Academic Year</label>
                     <select id="year-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition">
                         <option>Select Year</option>
                     </select>
                 </div>
-                <!-- Subject Selector -->
                 <div>
                     <label for="subject-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Subject</label>
                     <select id="subject-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition" disabled>
                         <option>Select Subject</option>
                     </select>
                 </div>
-                <!-- Experiment Selector -->
                 <div>
                     <label for="exp-select" class="block mb-2 text-sm font-medium text-[#00ff8c]">Experiment</label>
                     <select id="exp-select" class="w-full p-3 bg-transparent border border-gray-600 dark:border-gray-600 light:border-gray-400 rounded-lg focus:ring-[#00ff8c] focus:border-[#00ff8c] transition" disabled>
@@ -401,20 +452,27 @@
             </div>
         </div>
 
-        <!-- Arcade Section (Hidden by default) -->
         <div id="arcade-section" class="glass-ui p-6 mb-8 hidden">
             <div class="flex justify-between items-center">
                 <h2 class="font-title text-2xl text-white">Arcade</h2>
                 <button id="close-arcade" class="text-2xl font-bold">&times;</button>
             </div>
-            <div class="flex justify-center gap-4 my-4">
+            <div class="flex justify-center flex-wrap gap-4 my-4">
                 <button id="show-tic-tac-toe" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Tic-Tac-Toe</button>
                 <button id="show-2048" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">2048</button>
+                <button id="show-snake" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Snake</button>
+                <button id="show-minesweeper" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Minesweeper</button>
             </div>
 
-            <!-- Tic Tac Toe Game -->
             <div id="tic-tac-toe-container" class="game-container active">
                 <h3 class="text-xl font-bold text-center text-[#00ff8c]">Tic-Tac-Toe</h3>
+                <div class="text-center my-2">
+                    <label for="tic-tac-toe-difficulty">Difficulty:</label>
+                    <select id="tic-tac-toe-difficulty" class="bg-transparent border border-gray-500 rounded px-2">
+                        <option value="easy">Easy</option>
+                        <option value="hard">Unbeatable</option>
+                    </select>
+                </div>
                 <div id="tic-tac-toe-board"></div>
                 <p id="tic-tac-toe-status" class="text-center mt-4"></p>
                 <div class="text-center mt-4">
@@ -422,21 +480,41 @@
                 </div>
             </div>
 
-            <!-- 2048 Game -->
             <div id="game-2048" class="game-container">
                  <h3 class="text-xl font-bold text-center text-[#00ff8c]">2048</h3>
                  <div class="flex justify-between items-center my-2 max-w-sm mx-auto">
-                    <div class="text-lg">Score: <span id="score-2048">0</span></div>
-                    <button id="new-game-2048" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">New Game</button>
+                     <div class="text-lg">Score: <span id="score-2048">0</span></div>
+                      <div class="text-lg">High Score: <span id="highscore-2048">0</span><span id="highscore-icon-2048"></span></div>
+                     <button id="new-game-2048" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">New Game</button>
                  </div>
                  <div id="game-2048-container">
-                    <div id="grid-2048"></div>
-                    <div id="tiles-2048" class="absolute top-0 left-0 right-0 bottom-0"></div>
+                     <div id="grid-2048"></div>
+                     <div id="tiles-2048"></div>
                  </div>
+                 <p class="text-center text-sm mt-2 text-gray-400">Use arrow keys to play</p>
             </div>
+            
+            <div id="snake-container" class="game-container">
+                <h3 class="text-xl font-bold text-center text-[#00ff8c]">Snake</h3>
+                 <div class="flex justify-between items-center my-2 max-w-md mx-auto">
+                    <div class="text-lg">Score: <span id="snake-score">0</span></div>
+                    <button id="restart-snake" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Start Game</button>
+                </div>
+                <div id="game-snake-board" style="width: 400px; height: 400px;"></div>
+            </div>
+
+             <div id="minesweeper-container" class="game-container">
+                <h3 class="text-xl font-bold text-center text-[#00ff8c]">Minesweeper</h3>
+                 <div class="flex justify-between items-center my-2 max-w-sm mx-auto">
+                    <div class="text-lg">Mines: <span id="minesweeper-count">10</span></div>
+                    <div class="text-lg">Time: <span id="minesweeper-timer">0</span>s</div>
+                    <button id="restart-minesweeper" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">New Game</button>
+                </div>
+                <div id="game-minesweeper-board"></div>
+             </div>
+
         </div>
 
-        <!-- Experiment Display Area -->
         <div id="experiment-display" class="min-h-[400px]">
             <div id="placeholder" class="text-center text-gray-500 mt-20">
                 <p>Please make a selection to view an experiment.</p>
@@ -445,13 +523,11 @@
 
     </div>
 
-    <!-- Gemini API Modal -->
     <div id="gemini-modal">
         <div class="glass-ui p-6 w-11/12 md:w-3/4 lg:w-1/2 relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl font-bold">&times;</button>
             <div id="gemini-modal-content">
-                <!-- Content will be injected here by JavaScript -->
-            </div>
+                </div>
         </div>
     </div>
     
@@ -480,8 +556,8 @@
                         parts: [
                             {
                                 subtitle: "Character Stuffing",
-                                code: `#include <stdio.h>\n#include <string.h>\n\nint main()\n{\n    int i = 0, j = 0, n, pos;\n    char a[20], b[50], ch;\n\n    printf("Enter string:\\n");\n    scanf("%s", a);\n\n    n = strlen(a);\n\n    printf("Enter position to stuff the character:\\n");\n    scanf("%d", &pos);\n\n    if (pos > n || pos <= 0)\n    {\n        printf("Invalid position.\\n");\n        return 1; // Exit if position is invalid\n    }\n\n    printf("Enter the character to stuff:\\n");\n    scanf(" %c", &ch);\n\n    // Copy characters before the stuffing position\n    for(i = 0; i < pos - 1; i++) {\n        b[j++] = a[i];\n    }\n\n    // Add the stuffing sequence\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n    b[j++] = ch;\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n\n    // Copy the rest of the string\n    for(i = pos - 1; i < n; i++) {\n        b[j++] = a[i];\n    }\n\n    b[j] = '\\0';\n\n    printf("\\nString after character stuffing:\\n");\n    printf("%s\\n", b);\n\n    return 0;\n}`,
-                                output: `Enter string:\nzemo\nEnter position to stuff the character:\n3\nEnter the character to stuff:\nx\n\nString after character stuffing:\nze-dlex-dlemo`
+                                code: `#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char a[200], b[600];\n    int i = 0, j = 0, n, pos;\n    char ch;\n\n    printf("Enter string\\n");\n    if (!fgets(a, sizeof(a), stdin)) return 0;\n    n = (int)strlen(a);\n    if (n && a[n-1] == '\\n') a[--n] = '\\0';\n\n    printf("Enter position\\n");\n    scanf("%d", &pos);\n\n    if (pos < 1) pos = 1;\n    if (pos > n + 1) pos = n + 1;\n\n    printf("Enter the character\\n");\n    scanf(" %c", &ch);\n\n    /* Start of frame: DLE STX */\n    b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    b[j++] = 's'; b[j++] = 't'; b[j++] = 'x';\n\n    for (i = 0; i < n; i++) {\n        /* insert DLE ch DLE at requested 1-based position */\n        if (i == pos - 1) {\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            b[j++] = ch;\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n        }\n\n        /* DLE stuffing: duplicate any occurrence of "dle" in data */\n        if (i + 2 < n && a[i] == 'd' && a[i+1] == 'l' && a[i+2] == 'e') {\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            i += 2; /* skip the 'l' and 'e' we just handled */\n        } else {\n            b[j++] = a[i];\n        }\n    }\n\n    /* if insertion is at the very end */\n    if (pos == n + 1) {\n        b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n        b[j++] = ch;\n        b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    }\n\n    /* End of frame: DLE ETX */\n    b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    b[j++] = 'e'; b[j++] = 't'; b[j++] = 'x';\n    b[j] = '\\0';\n\n    printf("Frame after stuffing\\n");\n    printf("%s\\n", b);\n    return 0;\n}`,
+                                output: `Enter string\ntest\nEnter position\n1\nEnter the character\nA\n\nFrame after stuffing\ndlestxdleAdletestdleetx`
                             },
                             {
                                 subtitle: "Bit Stuffing",
@@ -667,9 +743,20 @@
         const htmlEl = document.documentElement;
         const geminiModal = document.getElementById('gemini-modal');
         const geminiModalContent = document.getElementById('gemini-modal-content');
+        const toastContainer = document.getElementById('toast-container');
 
 
         // --- FUNCTIONS ---
+        
+        function showToast(message, duration = 3000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
+        }
 
         function populateSelect(selectElement, options, defaultText) {
             selectElement.innerHTML = `<option>${defaultText}</option>`;
@@ -684,16 +771,16 @@
         function populateExperimentSelect(experiments) {
              expSelect.innerHTML = `<option>Select Experiment</option>`;
              if (Object.keys(experiments).length === 0) {
-                expSelect.innerHTML = `<option>No experiments yet</option>`;
-                expSelect.disabled = true;
-                return;
+                 expSelect.innerHTML = `<option>No experiments yet</option>`;
+                 expSelect.disabled = true;
+                 return;
              }
              expSelect.disabled = false;
              for (const key in experiments) {
-                const optionElement = document.createElement('option');
-                optionElement.value = key;
-                optionElement.textContent = experiments[key].title;
-                expSelect.appendChild(optionElement);
+                 const optionElement = document.createElement('option');
+                 optionElement.value = key;
+                 optionElement.textContent = experiments[key].title;
+                 expSelect.appendChild(optionElement);
              }
         }
 
@@ -702,7 +789,7 @@
             const selectedExpKey = expSelect.value;
             
             let contentHTML = `<div class="glass-ui p-6 animate-fade-in">
-                                 <h2 class="text-2xl font-bold text-[#00ff8c] mb-4">${expData.title}</h2>`;
+                                        <h2 class="text-2xl font-bold text-[#00ff8c] mb-4">${expData.title}</h2>`;
 
             expData.parts.forEach((part, index) => {
                 let buttonsHTML = `
@@ -796,8 +883,8 @@
 
         async function callGemini(prompt, maxRetries = 3) {
             showLoading();
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const apiKey = ""; // 👈 PASTE YOUR GEMINI API KEY HERE
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             
             const payload = {
                 contents: [{ role: "user", parts: [{ text: prompt }] }]
@@ -854,10 +941,13 @@
             
             callGemini(prompt).then(text => {
                 if (text) {
+                    // Basic markdown to HTML conversion
                     const htmlResult = text
-                        .replace(/```c/g, '<pre class="bg-gray-800 p-2 rounded mt-2"><code>')
+                        .replace(/```(c|javascript|bash|yaml|sh)?/g, '<pre class="bg-gray-800 p-2 rounded my-2 text-sm"><code>')
                         .replace(/```/g, '</code></pre>')
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/`([^`]+)`/g, '<code class="bg-gray-700 px-1 rounded text-sm">$1</code>')
+                        .replace(/^\s*-\s/gm, '&bull; ')
                         .replace(/\n/g, '<br>');
                     geminiModalContent.innerHTML = `<h2 class="text-2xl font-bold text-[#00ff8c] mb-4">AI Assistant says:</h2><div class="text-left">${htmlResult}</div>`;
                 }
@@ -898,7 +988,7 @@
 
             // Create and position nodes
             for (let i = 0; i < n; i++) {
-                const angle = (i / n) * 2 * Math.PI;
+                const angle = (i / n) * 2 * Math.PI - (Math.PI / 2); // Start from top
                 const x = 50 + 40 * Math.cos(angle);
                 const y = 50 + 40 * Math.sin(angle);
                 nodePositions.push({ x, y });
@@ -957,7 +1047,7 @@
                     }
                 }
                 
-                if (u === -1) break;
+                if (u === -1 || dist[u] === Infinity) break;
 
                 visited[u] = true;
                 document.getElementById(`node-${u}`).classList.add('current');
@@ -966,7 +1056,7 @@
 
                 for (let v = 0; v < n; v++) {
                     if (!visited[v] && graph[u][v] && dist[u] !== Infinity && dist[u] + graph[u][v] < dist[v]) {
-                        log(`  -> Found a shorter path to node ${v}. New distance: ${dist[u] + graph[u][v]}`);
+                        log(`&nbsp;&nbsp;-> Found a shorter path to node ${v}. New distance: ${dist[u] + graph[u][v]}`);
                         dist[v] = dist[u] + graph[u][v];
                     }
                 }
@@ -976,8 +1066,9 @@
             }
             
             log('Algorithm finished. Final shortest distances from node 0:');
-            dist.forEach((d, i) => log(`  Node ${i}: ${d}`));
+            dist.forEach((d, i) => log(`&nbsp;&nbsp;Node ${i}: ${d}`));
         }
+
 
         // --- EVENT LISTENERS ---
 
@@ -992,6 +1083,12 @@
             }
             const years = Object.keys(labData);
             populateSelect(yearSelect, years, 'Select Year');
+            
+            initializeArcadeUI();
+            initializeTicTacToe();
+            initialize2048();
+            initializeSnake();
+            initializeMinesweeper();
         });
 
         yearSelect.addEventListener('change', () => {
@@ -1042,6 +1139,576 @@
                 closeModal();
             }
         });
+
+        // =======================================================
+        // ====== ARCADE & GAMES FUNCTIONS (UPDATED & MERGED) =====
+        // =======================================================
+
+        function initializeArcadeUI() {
+            const brainEmoji = document.getElementById('brain-emoji');
+            const arcadeSection = document.getElementById('arcade-section');
+            const selectorUI = document.getElementById('selector-ui');
+            const experimentDisplay = document.getElementById('experiment-display');
+            const closeArcadeBtn = document.getElementById('close-arcade');
+            
+            const gameBtns = {
+                'tic-tac-toe': document.getElementById('show-tic-tac-toe'),
+                '2048': document.getElementById('show-2048'),
+                'snake': document.getElementById('show-snake'),
+                'minesweeper': document.getElementById('show-minesweeper'),
+            };
+
+            const gameContainers = {
+                'tic-tac-toe': document.getElementById('tic-tac-toe-container'),
+                '2048': document.getElementById('game-2048'),
+                'snake': document.getElementById('snake-container'),
+                'minesweeper': document.getElementById('minesweeper-container')
+            };
+
+            brainEmoji.addEventListener('click', () => {
+                selectorUI.classList.add('hidden');
+                experimentDisplay.classList.add('hidden');
+                arcadeSection.classList.remove('hidden');
+            });
+
+            closeArcadeBtn.addEventListener('click', () => {
+                arcadeSection.classList.add('hidden');
+                selectorUI.classList.remove('hidden');
+                experimentDisplay.classList.remove('hidden');
+            });
+            
+            const showGame = (gameId) => {
+                Object.values(gameContainers).forEach(container => container.classList.remove('active'));
+                if (gameContainers[gameId]) {
+                    gameContainers[gameId].classList.add('active');
+                }
+            };
+            
+            Object.keys(gameBtns).forEach(gameId => {
+                gameBtns[gameId].addEventListener('click', () => showGame(gameId));
+            });
+        }
+
+        function initializeTicTacToe() {
+            const boardEl = document.getElementById('tic-tac-toe-board');
+            const statusDisplay = document.getElementById('tic-tac-toe-status');
+            const restartButton = document.getElementById('restart-tic-tac-toe');
+            const difficultySelect = document.getElementById('tic-tac-toe-difficulty');
+            if (!boardEl) return;
+
+            let board = ["", "", "", "", "", "", "", "", ""];
+            let gameActive = true;
+            const player = 'X';
+            const ai = 'O';
+
+            const winningConditions = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ];
+
+            function checkWinner(currentBoard, currentPlayer) {
+                for (const condition of winningConditions) {
+                    if (condition.every(index => currentBoard[index] === currentPlayer)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            function isBoardFull(currentBoard) {
+                return currentBoard.every(cell => cell !== "");
+            }
+
+            function handleCellClick(e) {
+                const index = parseInt(e.target.dataset.cellIndex);
+                if (board[index] !== "" || !gameActive) return;
+
+                board[index] = player;
+                renderBoard();
+
+                if (checkWinner(board, player)) {
+                    statusDisplay.textContent = 'You win! 🎉';
+                    gameActive = false;
+                    return;
+                }
+                if (isBoardFull(board)) {
+                    statusDisplay.textContent = "It's a draw!";
+                    gameActive = false;
+                    return;
+                }
+
+                gameActive = false; // Disable clicks during AI turn
+                statusDisplay.textContent = "AI is thinking...";
+                setTimeout(aiMove, 500);
+            }
+
+            function aiMove() {
+                let move;
+                if (difficultySelect.value === 'easy') {
+                    let emptyCells = board.map((c, i) => c === "" ? i : null).filter(v => v !== null);
+                    move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                } else {
+                    move = findBestMove(board);
+                }
+                
+                board[move] = ai;
+                renderBoard();
+                
+                if (checkWinner(board, ai)) {
+                    statusDisplay.textContent = 'AI wins! 🤖';
+                    gameActive = false;
+                    return;
+                }
+                if (isBoardFull(board)) {
+                    statusDisplay.textContent = "It's a draw!";
+                    gameActive = false;
+                    return;
+                }
+
+                statusDisplay.textContent = "Your turn.";
+                gameActive = true;
+            }
+
+            function findBestMove(currentBoard) {
+                let bestScore = -Infinity;
+                let move;
+                for (let i = 0; i < 9; i++) {
+                    if (currentBoard[i] === "") {
+                        currentBoard[i] = ai;
+                        let score = minimax(currentBoard, 0, false);
+                        currentBoard[i] = "";
+                        if (score > bestScore) {
+                            bestScore = score;
+                            move = i;
+                        }
+                    }
+                }
+                return move;
+            }
+
+            const scores = { [ai]: 10, [player]: -10, draw: 0 };
+
+            function minimax(currentBoard, depth, isMaximizing) {
+                if (checkWinner(currentBoard, ai)) return scores[ai] - depth;
+                if (checkWinner(currentBoard, player)) return scores[player] + depth;
+                if (isBoardFull(currentBoard)) return scores.draw;
+
+                if (isMaximizing) {
+                    let bestScore = -Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (currentBoard[i] === "") {
+                            currentBoard[i] = ai;
+                            let score = minimax(currentBoard, depth + 1, false);
+                            currentBoard[i] = "";
+                            bestScore = Math.max(score, bestScore);
+                        }
+                    }
+                    return bestScore;
+                } else {
+                    let bestScore = Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (currentBoard[i] === "") {
+                            currentBoard[i] = player;
+                            let score = minimax(currentBoard, depth + 1, true);
+                            currentBoard[i] = "";
+                            bestScore = Math.min(score, bestScore);
+                        }
+                    }
+                    return bestScore;
+                }
+            }
+
+            function renderBoard() {
+                boardEl.innerHTML = '';
+                board.forEach((val, i) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'tic-tac-toe-cell';
+                    if (val) cell.classList.add('pop');
+                    cell.dataset.cellIndex = i;
+                    cell.textContent = val;
+                    cell.addEventListener('click', handleCellClick);
+                    boardEl.appendChild(cell);
+                });
+            }
+            
+            function restartGame() {
+                board = ["", "", "", "", "", "", "", "", ""];
+                gameActive = true;
+                statusDisplay.textContent = "Your turn.";
+                renderBoard();
+            }
+
+            restartButton.addEventListener('click', restartGame);
+            difficultySelect.addEventListener('change', restartGame);
+            restartGame();
+        }
+
+        function initialize2048() {
+            const gridDisplay = document.getElementById('grid-2048');
+            const tilesDisplay = document.getElementById('tiles-2048');
+            const scoreDisplay = document.getElementById('score-2048');
+            const highscoreDisplay = document.getElementById('highscore-2048');
+            const highscoreIcon = document.getElementById('highscore-icon-2048');
+            const newGameBtn = document.getElementById('new-game-2048');
+            if(!gridDisplay) return;
+
+            const width = 4;
+            let grid = [];
+            let score = 0;
+            let highscore = localStorage.getItem('2048-highscore') || 0;
+
+            function updateHighscore() {
+                if (score > highscore) {
+                    highscore = score;
+                    localStorage.setItem('2048-highscore', highscore);
+                    highscoreIcon.textContent = ' 🏆';
+                    showToast(`New High Score: ${highscore}!`);
+                }
+                highscoreDisplay.textContent = highscore;
+            }
+
+            function createBoard() {
+                grid = Array(width * width).fill(0);
+                score = 0;
+                scoreDisplay.textContent = 0;
+                highscoreIcon.textContent = '';
+                gridDisplay.innerHTML = '';
+                for (let i = 0; i < width * width; i++) {
+                    gridDisplay.appendChild(document.createElement('div')).className = 'grid-cell-2048';
+                }
+                generateNumber();
+                generateNumber();
+                updateHighscore();
+                renderTiles();
+            }
+
+            function renderTiles(oldGrid = []) {
+                 tilesDisplay.innerHTML = '';
+                 for(let i=0; i<grid.length; i++) {
+                     if (grid[i] > 0) {
+                         const x = i % width;
+                         const y = Math.floor(i / width);
+                         const tile = document.createElement('div');
+                         tile.className = 'tile-2048';
+                         tile.setAttribute('data-value', grid[i]);
+                         tile.style.top = `${y * 90}px`;
+                         tile.style.left = `${x * 90}px`;
+                         tile.textContent = grid[i];
+
+                         if (oldGrid.length > 0 && oldGrid[i] === 0) {
+                             tile.classList.add('tile-new');
+                         } else if (oldGrid.length > 0 && grid[i] > oldGrid[i] && !wasMerged(oldGrid, grid, i)) {
+                             // This condition is tricky. A simple value increase could be a new tile appearing
+                             // in a previously occupied merged spot. The key is to see if a merge *produced* this tile.
+                             // For simplicity, we animate merges based on value increase.
+                             tile.classList.add('tile-merged');
+                         } else if (oldGrid.length === 0) {
+                              tile.classList.add('tile-new');
+                         }
+                         tilesDisplay.appendChild(tile);
+                     }
+                 }
+            }
+
+            function generateNumber() {
+                let emptyCells = grid.map((val, i) => val === 0 ? i : -1).filter(i => i !== -1);
+                if (emptyCells.length > 0) {
+                    let randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                    grid[randomIndex] = Math.random() > 0.1 ? 2 : 4;
+                }
+            }
+            
+            function slideAndCombine(line) {
+                let filtered = line.filter(num => num > 0);
+                let combined = [];
+                for (let i = 0; i < filtered.length; i++) {
+                    if (i < filtered.length - 1 && filtered[i] === filtered[i+1]) {
+                        let mergedValue = filtered[i] * 2;
+                        score += mergedValue;
+                        combined.push(mergedValue);
+                        i++; // skip next element
+                    } else {
+                        combined.push(filtered[i]);
+                    }
+                }
+                let result = combined.concat(Array(width - combined.length).fill(0));
+                return result;
+            }
+
+            function move(direction) {
+                let hasChanged = false;
+                const gridBeforeMove = [...grid];
+
+                for (let i = 0; i < width; i++) {
+                    let line, originalLine;
+                    if (direction === 'left' || direction === 'right') {
+                        line = grid.slice(i * width, i * width + width);
+                    } else { // up or down
+                        line = Array.from({length: width}, (_, j) => grid[i + j * width]);
+                    }
+
+                    originalLine = [...line];
+                    let processedLine = (direction === 'left' || direction === 'up') ? slideAndCombine(line) : slideAndCombine(line.reverse()).reverse();
+
+                    if(JSON.stringify(originalLine) !== JSON.stringify(processedLine)) {
+                        hasChanged = true;
+                    }
+                    
+                    for (let j = 0; j < width; j++) {
+                        if (direction === 'left' || direction === 'right') {
+                            grid[i * width + j] = processedLine[j];
+                        } else {
+                            grid[i + j * width] = processedLine[j];
+                        }
+                    }
+                }
+
+                if (hasChanged) {
+                    generateNumber();
+                    scoreDisplay.textContent = score;
+                    updateHighscore();
+                    renderTiles(gridBeforeMove);
+                }
+            }
+            
+            function control(e) {
+                if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                    e.preventDefault();
+                    move(e.key.replace('Arrow', '').toLowerCase());
+                }
+            }
+
+            createBoard();
+            document.addEventListener('keydown', control);
+            newGameBtn.addEventListener('click', createBoard);
+        }
+
+        function initializeSnake() {
+            const boardEl = document.getElementById('game-snake-board');
+            const scoreEl = document.getElementById('snake-score');
+            const restartBtn = document.getElementById('restart-snake');
+            if (!boardEl) return;
+
+            const gridSize = 20;
+            let snake, food, direction, score, gameLoop, gameActive;
+
+            function setupBoard() {
+                boardEl.innerHTML = '';
+                boardEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+                for (let i = 0; i < gridSize * gridSize; i++) {
+                    const pixel = document.createElement('div');
+                    pixel.className = 'snake-pixel';
+                    pixel.id = `pixel-${i}`;
+                    boardEl.appendChild(pixel);
+                }
+            }
+
+            function startGame() {
+                if(gameLoop) clearInterval(gameLoop);
+                snake = [{ x: 10, y: 10 }];
+                food = generateFood();
+                direction = { x: 0, y: -1 }; // Start moving up
+                score = 0;
+                scoreEl.textContent = 0;
+                gameActive = true;
+                restartBtn.textContent = 'Restart';
+                draw(); // Initial draw
+                gameLoop = setInterval(update, 150);
+            }
+
+            function generateFood() {
+                let newFood;
+                do {
+                    newFood = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+                } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+                return newFood;
+            }
+
+            function draw() {
+                document.querySelectorAll('.snake-pixel').forEach(p => p.className = 'snake-pixel');
+                snake.forEach(segment => {
+                    if(segment.x >=0 && segment.x < gridSize && segment.y >=0 && segment.y < gridSize) {
+                        const index = segment.y * gridSize + segment.x;
+                        document.getElementById(`pixel-${index}`).classList.add('snake-body');
+                    }
+                });
+                const foodIndex = food.y * gridSize + food.x;
+                document.getElementById(`pixel-${foodIndex}`).classList.add('snake-food');
+            }
+
+            function update() {
+                if (!gameActive) return;
+
+                const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+                // Check for collision with walls or self
+                if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize ||
+                    snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                    gameActive = false;
+                    clearInterval(gameLoop);
+                    showToast('Game Over!');
+                    return;
+                }
+                
+                snake.unshift(head);
+
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    scoreEl.textContent = score;
+                    food = generateFood();
+                } else {
+                    snake.pop();
+                }
+                draw();
+            }
+
+            function handleKeyPress(e) {
+                if (!gameActive) return;
+                switch (e.key) {
+                    case 'ArrowUp': if (direction.y === 0) direction = { x: 0, y: -1 }; break;
+                    case 'ArrowDown': if (direction.y === 0) direction = { x: 0, y: 1 }; break;
+                    case 'ArrowLeft': if (direction.x === 0) direction = { x: -1, y: 0 }; break;
+                    case 'ArrowRight': if (direction.x === 0) direction = { x: 1, y: 0 }; break;
+                }
+            }
+
+            setupBoard();
+            restartBtn.addEventListener('click', startGame);
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        function initializeMinesweeper() {
+            const boardEl = document.getElementById('game-minesweeper-board');
+            const countEl = document.getElementById('minesweeper-count');
+            const timerEl = document.getElementById('minesweeper-timer');
+            const restartBtn = document.getElementById('restart-minesweeper');
+            if (!boardEl) return;
+
+            const rows = 10, cols = 10, mines = 10;
+            let board, flags, timerInterval, time, gameOver;
+
+            function createBoard() {
+                if (timerInterval) clearInterval(timerInterval);
+                gameOver = false;
+                time = 0;
+                flags = 0;
+                board = Array(rows).fill(0).map(() => Array(cols).fill(0).map(() => ({ mine: false, revealed: false, flagged: false, neighbors: 0 })));
+                
+                let minesPlaced = 0;
+                while (minesPlaced < mines) {
+                    const r = Math.floor(Math.random() * rows);
+                    const c = Math.floor(Math.random() * cols);
+                    if (!board[r][c].mine) {
+                        board[r][c].mine = true;
+                        minesPlaced++;
+                    }
+                }
+                
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (board[r][c].mine) continue;
+                        let count = 0;
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (r + dr >= 0 && r + dr < rows && c + dc >= 0 && c + dc < cols && board[r + dr][c + dc].mine) {
+                                    count++;
+                                }
+                            }
+                        }
+                        board[r][c].neighbors = count;
+                    }
+                }
+                render();
+            }
+
+            function revealCell(r, c) {
+                if (gameOver || r < 0 || r >= rows || c < 0 || c >= cols || board[r][c].revealed || board[r][c].flagged) return;
+                
+                if (time === 0 && !gameOver) {
+                    timerInterval = setInterval(() => { timerEl.textContent = ++time; }, 1000);
+                }
+                
+                board[r][c].revealed = true;
+                
+                if (board[r][c].mine) {
+                    gameOver = true;
+                    clearInterval(timerInterval);
+                    showToast('Game Over! You hit a mine.');
+                    revealAllMines();
+                    render();
+                    return;
+                }
+
+                if (board[r][c].neighbors === 0) {
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (dr === 0 && dc === 0) continue;
+                            revealCell(r + dr, c + dc);
+                        }
+                    }
+                }
+                render();
+                checkWin();
+            }
+
+            function toggleFlag(r, c) {
+                if (gameOver || board[r][c].revealed) return;
+                board[r][c].flagged = !board[r][c].flagged;
+                flags += board[r][c].flagged ? 1 : -1;
+                render();
+            }
+            
+            function checkWin() {
+                const revealedCount = board.flat().filter(cell => cell.revealed).length;
+                if (revealedCount === rows * cols - mines) {
+                    gameOver = true;
+                    clearInterval(timerInterval);
+                    showToast(`You win! Time: ${time}s`);
+                    revealAllMines(true); 
+                }
+            }
+            
+            function revealAllMines(isWin = false) {
+                 board.forEach(row => row.forEach(cell => {
+                    if (cell.mine) {
+                         cell.revealed = true;
+                         if(isWin) cell.flagged = true;
+                    }
+                }));
+                 render();
+            }
+            
+            function render() {
+                boardEl.innerHTML = '';
+                boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+                countEl.textContent = mines - flags;
+                timerEl.textContent = time;
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'mine-cell';
+                        if (board[r][c].revealed) cell.classList.add('revealed');
+                        if (board[r][c].flagged) cell.classList.add('flagged');
+                        
+                        if (board[r][c].revealed) {
+                            if (board[r][c].mine) {
+                                cell.innerHTML = '💣';
+                            } else if (board[r][c].neighbors > 0) {
+                                cell.textContent = board[r][c].neighbors;
+                                cell.dataset.mines = board[r][c].neighbors;
+                            }
+                        } else if (board[r][c].flagged) {
+                            cell.innerHTML = '<i class="flag-emoji">🚩</i>';
+                        }
+
+                        cell.addEventListener('click', () => revealCell(r, c));
+                        cell.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleFlag(r, c); });
+                        boardEl.appendChild(cell);
+                    }
+                }
+            }
+            
+            restartBtn.addEventListener('click', createBoard);
+            createBoard();
+        }
 
     </script>
 </body>
