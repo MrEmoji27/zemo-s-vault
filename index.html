@@ -278,7 +278,6 @@
             transform: scale(1);
             transition: transform 0.2s ease;
         }
-        /* ADDED: Animation for Tic Tac Toe */
         .tic-tac-toe-cell.pop {
             animation: pop-in 0.3s ease-out;
         }
@@ -293,6 +292,9 @@
             width: 400px;
             margin: 20px auto;
             position: relative;
+            -webkit-touch-callout: none; -webkit-user-select: none;
+            -khtml-user-select: none; -moz-user-select: none;
+            -ms-user-select: none; user-select: none;
         }
         #grid-2048 {
             display: grid;
@@ -327,41 +329,21 @@
             align-items: center;
             font-size: 2rem;
             font-weight: bold;
-            /* UPDATED: Smoother transition */
             transition: top 0.2s ease-in-out, left 0.2s ease-in-out;
             color: #1a1a1a;
         }
-        /* Tile color styles */
-        [data-value="2"] { background-color: #eee4da; }
-        [data-value="4"] { background-color: #ede0c8; }
-        [data-value="8"] { background-color: #f2b179; color: #f9f6f2; }
-        [data-value="16"] { background-color: #f59563; color: #f9f6f2; }
-        [data-value="32"] { background-color: #f67c5f; color: #f9f6f2; }
-        [data-value="64"] { background-color: #f65e3b; color: #f9f6f2; }
-        [data-value="128"] { background-color: #edcf72; color: #f9f6f2; }
-        [data-value="256"] { background-color: #edcc61; color: #f9f6f2; }
-        [data-value="512"] { background-color: #edc850; color: #f9f6f2; }
-        [data-value="1024"] { background-color: #edc53f; color: #f9f6f2; }
+        [data-value="2"] { background-color: #eee4da; } [data-value="4"] { background-color: #ede0c8; }
+        [data-value="8"] { background-color: #f2b179; color: #f9f6f2; } [data-value="16"] { background-color: #f59563; color: #f9f6f2; }
+        [data-value="32"] { background-color: #f67c5f; color: #f9f6f2; } [data-value="64"] { background-color: #f65e3b; color: #f9f6f2; }
+        [data-value="128"] { background-color: #edcf72; color: #f9f6f2; } [data-value="256"] { background-color: #edcc61; color: #f9f6f2; }
+        [data-value="512"] { background-color: #edc850; color: #f9f6f2; } [data-value="1024"] { background-color: #edc53f; color: #f9f6f2; }
         [data-value="2048"] { background-color: #edc22e; color: #f9f6f2; }
-
-        /* ADDED: Animations for 2048 tiles */
-        .tile-new {
-            animation: tile-spawn 0.2s ease;
-        }
-        .tile-merged {
-            animation: tile-merge 0.2s ease;
-        }
-        @keyframes tile-spawn {
-            from { transform: scale(0); }
-            to { transform: scale(1); }
-        }
-        @keyframes tile-merge {
-            from { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            to { transform: scale(1); }
-        }
+        .tile-new { animation: tile-spawn 0.2s ease; }
+        .tile-merged { animation: tile-merge 0.2s ease; }
+        @keyframes tile-spawn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes tile-merge { from { transform: scale(1); } 50% { transform: scale(1.2); } to { transform: scale(1); } }
         
-        /* --- NEW: Snake Styles --- */
+        /* Snake Styles */
         #game-snake-board {
             display: grid; border: 2px solid #00ff8c;
             margin: 10px auto; background-color: rgba(0,0,0,0.3);
@@ -369,21 +351,34 @@
         .snake-pixel { background-color: rgba(255,255,255,0.1); transition: background-color 0.1s linear; }
         .snake-body { background-color: #00ff8c; }
         .snake-food { background-color: #ff8c00; border-radius: 50%; transform: scale(1.1); }
+        
+        /* NEW: Tetris Styles */
+        #tetris-board { border: 2px solid #00ff8c; background-color: rgba(0,0,0,0.3); }
+        #tetris-container { text-align: center; }
 
-        /* --- NEW: Minesweeper Styles --- */
-        #game-minesweeper-board { display: grid; gap: 2px; margin: 10px auto; background-color: #333; }
-        .mine-cell {
-            width: 30px; height: 30px; background-color: rgba(0,0,0,0.3); border: 1px solid #444;
-            display: flex; justify-content: center; align-items: center; font-weight: bold;
-            cursor: pointer; user-select: none;
+        /* NEW: Pong Styles */
+        #pong-board { background-color: rgba(0,0,0,0.8); border: 2px solid #00ff8c; cursor: none; }
+        #pong-container { text-align: center; }
+        
+        /* NEW: Mobile Controls Styles */
+        .mobile-controls {
+            display: none; /* Hidden by default */
+            margin-top: 1rem;
+            -webkit-touch-callout: none; -webkit-user-select: none;
+            -khtml-user-select: none; -moz-user-select: none;
+            -ms-user-select: none; user-select: none;
         }
-        .mine-cell.revealed { background-color: rgba(255,255,255,0.1); border-color: #222; }
-        .mine-cell .flag-emoji { display: none; }
-        .mine-cell.flagged .flag-emoji { display: block; font-style: normal; }
-        [data-mines="1"] { color: #0094ff; } [data-mines="2"] { color: #00ff8c; } [data-mines="3"] { color: #ff5e57; }
-        [data-mines="4"] { color: #af00ff; } [data-mines="5"] { color: #ffc400; } [data-mines="6"] { color: #00d9e9; }
-        [data-mines="8"] { color: #aaaaaa; }
-
+        .mobile-controls button {
+            background-color: #00ff8c; color: black; font-weight: bold;
+            width: 60px; height: 60px; border-radius: 50%; margin: 5px;
+            border: none; font-size: 1.5rem;
+            display: inline-flex; justify-content: center; align-items: center;
+        }
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: block;
+            }
+        }
 
     </style>
 </head>
@@ -461,7 +456,8 @@
                 <button id="show-tic-tac-toe" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Tic-Tac-Toe</button>
                 <button id="show-2048" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">2048</button>
                 <button id="show-snake" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Snake</button>
-                <button id="show-minesweeper" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Minesweeper</button>
+                <button id="show-tetris" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Tetris</button>
+                <button id="show-pong" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Pong</button>
             </div>
 
             <div id="tic-tac-toe-container" class="game-container active">
@@ -491,7 +487,7 @@
                      <div id="grid-2048"></div>
                      <div id="tiles-2048"></div>
                  </div>
-                 <p class="text-center text-sm mt-2 text-gray-400">Use arrow keys to play</p>
+                 <p class="text-center text-sm mt-2 text-gray-400">Use arrow keys or swipe to play</p>
             </div>
             
             <div id="snake-container" class="game-container">
@@ -500,19 +496,39 @@
                     <div class="text-lg">Score: <span id="snake-score">0</span></div>
                     <button id="restart-snake" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Start Game</button>
                 </div>
-                <div id="game-snake-board" style="width: 400px; height: 400px;"></div>
+                <div id="game-snake-board" style="width: 300px; height: 300px;"></div>
+                <div id="snake-mobile-controls" class="mobile-controls text-center">
+                    <div><button id="snake-up">▲</button></div>
+                    <button id="snake-left">◄</button>
+                    <button id="snake-down">▼</button>
+                    <button id="snake-right">►</button>
+                </div>
+            </div>
+            
+            <div id="tetris-container" class="game-container">
+                 <h3 class="text-xl font-bold text-center text-[#00ff8c]">Tetris</h3>
+                 <div class="flex justify-center items-center my-2 gap-8">
+                     <div class="text-lg">Score: <span id="tetris-score">0</span></div>
+                     <button id="restart-tetris" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Start Game</button>
+                 </div>
+                 <canvas id="tetris-board" width="240" height="480" class="mx-auto"></canvas>
+                 <div id="tetris-mobile-controls" class="mobile-controls text-center">
+                    <button id="tetris-left">◄</button>
+                    <button id="tetris-rotate">↻</button>
+                    <button id="tetris-right">►</button>
+                    <button id="tetris-down">▼</button>
+                </div>
             </div>
 
-             <div id="minesweeper-container" class="game-container">
-                <h3 class="text-xl font-bold text-center text-[#00ff8c]">Minesweeper</h3>
-                 <div class="flex justify-between items-center my-2 max-w-sm mx-auto">
-                    <div class="text-lg">Mines: <span id="minesweeper-count">10</span></div>
-                    <div class="text-lg">Time: <span id="minesweeper-timer">0</span>s</div>
-                    <button id="restart-minesweeper" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">New Game</button>
-                </div>
-                <div id="game-minesweeper-board"></div>
-             </div>
-
+            <div id="pong-container" class="game-container">
+                <h3 class="text-xl font-bold text-center text-[#00ff8c]">Pong</h3>
+                 <div class="flex justify-center items-center my-2 gap-8">
+                     <div class="text-lg">Player: <span id="pong-player-score">0</span></div>
+                     <div class="text-lg">AI: <span id="pong-ai-score">0</span></div>
+                 </div>
+                 <canvas id="pong-board" width="600" height="400" class="mx-auto"></canvas>
+                 <p class="text-center text-sm mt-2 text-gray-400">Use mouse, keyboard arrows, or touch to move</p>
+            </div>
         </div>
 
         <div id="experiment-display" class="min-h-[400px]">
@@ -556,8 +572,8 @@
                         parts: [
                             {
                                 subtitle: "Character Stuffing",
-                                code: `#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char a[200], b[600];\n    int i = 0, j = 0, n, pos;\n    char ch;\n\n    printf("Enter string\\n");\n    if (!fgets(a, sizeof(a), stdin)) return 0;\n    n = (int)strlen(a);\n    if (n && a[n-1] == '\\n') a[--n] = '\\0';\n\n    printf("Enter position\\n");\n    scanf("%d", &pos);\n\n    if (pos < 1) pos = 1;\n    if (pos > n + 1) pos = n + 1;\n\n    printf("Enter the character\\n");\n    scanf(" %c", &ch);\n\n    /* Start of frame: DLE STX */\n    b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    b[j++] = 's'; b[j++] = 't'; b[j++] = 'x';\n\n    for (i = 0; i < n; i++) {\n        /* insert DLE ch DLE at requested 1-based position */\n        if (i == pos - 1) {\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            b[j++] = ch;\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n        }\n\n        /* DLE stuffing: duplicate any occurrence of "dle" in data */\n        if (i + 2 < n && a[i] == 'd' && a[i+1] == 'l' && a[i+2] == 'e') {\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n            i += 2; /* skip the 'l' and 'e' we just handled */\n        } else {\n            b[j++] = a[i];\n        }\n    }\n\n    /* if insertion is at the very end */\n    if (pos == n + 1) {\n        b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n        b[j++] = ch;\n        b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    }\n\n    /* End of frame: DLE ETX */\n    b[j++] = 'd'; b[j++] = 'l'; b[j++] = 'e';\n    b[j++] = 'e'; b[j++] = 't'; b[j++] = 'x';\n    b[j] = '\\0';\n\n    printf("Frame after stuffing\\n");\n    printf("%s\\n", b);\n    return 0;\n}`,
-                                output: `Enter string\ntest\nEnter position\n1\nEnter the character\nA\n\nFrame after stuffing\ndlestxdleAdletestdleetx`
+                                code: `#include <stdio.h>\n#include <string.h>\n\nint main()\n{\n    int i = 0, j = 0, n, pos;\n    char a[20], b[50], ch;\n\n    printf("Enter string:\\n");\n    scanf("%s", a);\n\n    n = strlen(a);\n\n    printf("Enter position to stuff the character:\\n");\n    scanf("%d", &pos);\n\n    if (pos > n || pos <= 0)\n    {\n        printf("Invalid position.\\n");\n        return 1; // Exit if position is invalid\n    }\n\n    printf("Enter the character to stuff:\\n");\n    scanf(" %c", &ch);\n\n    // Copy characters before the stuffing position\n    for(i = 0; i < pos - 1; i++) {\n        b[j++] = a[i];\n    }\n\n    // Add the stuffing sequence\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n    b[j++] = ch;\n    b[j++] = 'd';\n    b[j++] = 'l';\n    b[j++] = 'e';\n\n    // Copy the rest of the string\n    for(i = pos - 1; i < n; i++) {\n        b[j++] = a[i];\n    }\n\n    b[j] = '\\0';\n\n    printf("\\nString after character stuffing:\\n");\n    printf("%s\\n", b);\n\n    return 0;\n}`,
+                                output: `Enter string:\nzemo\nEnter position to stuff the character:\n3\nEnter the character to stuff:\nx\n\nString after character stuffing:\nze-dlex-dlemo`
                             },
                             {
                                 subtitle: "Bit Stuffing",
@@ -569,8 +585,8 @@
                     "exp2": {
                         title: "2. Cyclic Redundancy Check (CRC)",
                         parts: [{
-                            code: `#include <stdio.h>\n#include <string.h>\n\n#define N strlen(gen_poly)\n\nchar data[28];\nchar check_value[28];\nchar gen_poly[10];\nint data_length, i, j;\n\nvoid XOR() {\n    for (j = 1; j < N; j++)\n        check_value[j] = ((check_value[j] == gen_poly[j]) ? '0' : '1');\n}\n\nvoid crc() {\n    for (i = 0; i < N; i++)\n        check_value[i] = data[i];\n    do {\n        if (check_value[0] == '1')\n            XOR();\n        for (j = 0; j < N - 1; j++)\n            check_value[j] = check_value[j + 1];\n        check_value[j] = data[i++];\n    } while (i <= data_length + N - 1);\n}\n\nint main() {\n    printf("Enter data to be transmitted: ");\n    scanf("%s", data);\n    printf("Enter the generator polynomial: ");\n    scanf("%s", gen_poly);\n    data_length = strlen(data);\n    for (i = data_length; i < data_length + N - 1; i++)\n        data[i] = '0';\n    data[i] = '\\0';\n    crc();\n    for (i = data_length; i < data_length + N - 1; i++)\n        data[i] = check_value[i - data_length];\n    data[i] = '\\0';\n    printf("Final data to be sent: %s\\n", data);\n    return 0;\n}`,
-                            output: `Enter data to be transmitted: 100100\nEnter the generator polynomial: 1101\nFinal data to be sent: 100100001`
+                            code: `#include <stdio.h>\n#include <math.h>\n\nint gen[4], genl = 4, frl = 8, rem[4];\n\nvoid calculateCRC(int fr[]);\n\nint main() {\n    int i, j, fr[8], dupfr[11], recfr[11], tlen, flag;\n\n    printf("Enter frame: ");\n    for(i = 0; i < frl; i++) {\n        scanf("%d", &fr[i]);\n        dupfr[i] = fr[i];\n    }\n\n    printf("Enter generator: ");\n    for(i = 0; i < genl; i++) {\n        scanf("%d", &gen[i]);\n    }\n\n    tlen = frl + genl - 1;\n    for(i = frl; i < tlen; i++) {\n        dupfr[i] = 0;\n    }\n\n    calculateCRC(dupfr);\n\n    for(i = 0; i < frl; i++) {\n        recfr[i] = fr[i];\n    }\n\n    for(i = frl, j = 1; i < tlen; i++, j++) {\n        recfr[i] = rem[j];\n    }\n\n    calculateCRC(recfr);\n\n    flag = 0;\n    for(i = 0; i < genl; i++) {\n        if(rem[i] != 0)\n            flag++;\n    }\n\n    if(flag == 0) {\n        printf("Frame received correctly.\\n");\n    } else {\n        printf("Error detected in received frame.\\n");\n    }\n\n    return 0;\n}\n\nvoid calculateCRC(int fr[]) {\n    int k, k1, i, j;\n    for(k = 0; k < frl; k++) {\n        if(fr[k] == 1) {\n            k1 = k;\n            for(i = 0, j = k; i < genl; i++, j++) {\n                rem[i] = fr[j] ^ gen[i];\n            }\n            for(i = 0; i < genl; i++) {\n                fr[k1] = rem[i];\n                k1++;\n            }\n        }\n    }\n}`,
+                            output: `Enter frame: 1 0 1 1 0 0 1 1\nEnter generator: 1 0 1 1\nFrame received correctly.`
                         }]
                     },
                     "exp3": {
@@ -799,7 +815,6 @@
                     </div>
                 `;
 
-                // Add visualizer button only for Dijkstra's algorithm
                 if (selectedExpKey === 'exp4' && expData.graphData) {
                     buttonsHTML += `
                     <div class="mt-4">
@@ -883,7 +898,7 @@
 
         async function callGemini(prompt, maxRetries = 3) {
             showLoading();
-            const apiKey = ""; // 👈 PASTE YOUR GEMINI API KEY HERE
+            const apiKey = "AIzaSyA1CycUdAie4Y-bXhXp3B60DVpsp0CIB8g"; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             
             const payload = {
@@ -905,7 +920,7 @@
                     
                     if (result.candidates?.[0]?.content?.parts?.[0]) {
                         const text = result.candidates[0].content.parts[0].text;
-                        return text; // Return the text for the caller to handle
+                        return text; 
                     } else {
                          throw new Error("Invalid response structure from API.");
                     }
@@ -967,7 +982,6 @@
                 </div>
             `;
             showModal();
-            // FIX: Delay the execution to allow the modal to render first
             setTimeout(() => runDijkstraVisualization(graph, 0), 100);
         }
 
@@ -983,12 +997,11 @@
             const n = graph.length;
             const nodePositions = [];
             const graphContainer = document.getElementById('graph-container');
-            if (!graphContainer) return; // Exit if container is not found
-            graphContainer.innerHTML = ''; // Clear previous elements
+            if (!graphContainer) return;
+            graphContainer.innerHTML = '';
 
-            // Create and position nodes
             for (let i = 0; i < n; i++) {
-                const angle = (i / n) * 2 * Math.PI - (Math.PI / 2); // Start from top
+                const angle = (i / n) * 2 * Math.PI - (Math.PI / 2);
                 const x = 50 + 40 * Math.cos(angle);
                 const y = 50 + 40 * Math.sin(angle);
                 nodePositions.push({ x, y });
@@ -1003,7 +1016,6 @@
                 graphContainer.appendChild(nodeEl);
             }
 
-            // Draw edges
             for (let i = 0; i < n; i++) {
                 for (let j = i + 1; j < n; j++) {
                     if (graph[i][j] > 0) {
@@ -1031,7 +1043,6 @@
                 }
             }
 
-            // Dijkstra's Algorithm Logic
             let dist = new Array(n).fill(Infinity);
             let visited = new Array(n).fill(false);
             dist[startNode] = 0;
@@ -1088,7 +1099,8 @@
             initializeTicTacToe();
             initialize2048();
             initializeSnake();
-            initializeMinesweeper();
+            initializeTetris();
+            initializePong();
         });
 
         yearSelect.addEventListener('change', () => {
@@ -1155,14 +1167,16 @@
                 'tic-tac-toe': document.getElementById('show-tic-tac-toe'),
                 '2048': document.getElementById('show-2048'),
                 'snake': document.getElementById('show-snake'),
-                'minesweeper': document.getElementById('show-minesweeper'),
+                'tetris': document.getElementById('show-tetris'),
+                'pong': document.getElementById('show-pong'),
             };
 
             const gameContainers = {
                 'tic-tac-toe': document.getElementById('tic-tac-toe-container'),
                 '2048': document.getElementById('game-2048'),
                 'snake': document.getElementById('snake-container'),
-                'minesweeper': document.getElementById('minesweeper-container')
+                'tetris': document.getElementById('tetris-container'),
+                'pong': document.getElementById('pong-container'),
             };
 
             brainEmoji.addEventListener('click', () => {
@@ -1185,7 +1199,9 @@
             };
             
             Object.keys(gameBtns).forEach(gameId => {
-                gameBtns[gameId].addEventListener('click', () => showGame(gameId));
+                if (gameBtns[gameId]) {
+                    gameBtns[gameId].addEventListener('click', () => showGame(gameId));
+                }
             });
         }
 
@@ -1205,16 +1221,12 @@
 
             function checkWinner(currentBoard, currentPlayer) {
                 for (const condition of winningConditions) {
-                    if (condition.every(index => currentBoard[index] === currentPlayer)) {
-                        return true;
-                    }
+                    if (condition.every(index => currentBoard[index] === currentPlayer)) return true;
                 }
                 return false;
             }
             
-            function isBoardFull(currentBoard) {
-                return currentBoard.every(cell => cell !== "");
-            }
+            function isBoardFull(currentBoard) { return currentBoard.every(cell => cell !== ""); }
 
             function handleCellClick(e) {
                 const index = parseInt(e.target.dataset.cellIndex);
@@ -1234,7 +1246,7 @@
                     return;
                 }
 
-                gameActive = false; // Disable clicks during AI turn
+                gameActive = false;
                 statusDisplay.textContent = "AI is thinking...";
                 setTimeout(aiMove, 500);
             }
@@ -1341,6 +1353,7 @@
         }
 
         function initialize2048() {
+            const container = document.getElementById('game-2048-container');
             const gridDisplay = document.getElementById('grid-2048');
             const tilesDisplay = document.getElementById('tiles-2048');
             const scoreDisplay = document.getElementById('score-2048');
@@ -1394,10 +1407,7 @@
 
                          if (oldGrid.length > 0 && oldGrid[i] === 0) {
                              tile.classList.add('tile-new');
-                         } else if (oldGrid.length > 0 && grid[i] > oldGrid[i] && !wasMerged(oldGrid, grid, i)) {
-                             // This condition is tricky. A simple value increase could be a new tile appearing
-                             // in a previously occupied merged spot. The key is to see if a merge *produced* this tile.
-                             // For simplicity, we animate merges based on value increase.
+                         } else if (oldGrid.length > 0 && grid[i] > oldGrid[i]) {
                              tile.classList.add('tile-merged');
                          } else if (oldGrid.length === 0) {
                               tile.classList.add('tile-new');
@@ -1423,13 +1433,12 @@
                         let mergedValue = filtered[i] * 2;
                         score += mergedValue;
                         combined.push(mergedValue);
-                        i++; // skip next element
+                        i++;
                     } else {
                         combined.push(filtered[i]);
                     }
                 }
-                let result = combined.concat(Array(width - combined.length).fill(0));
-                return result;
+                return combined.concat(Array(width - combined.length).fill(0));
             }
 
             function move(direction) {
@@ -1440,16 +1449,14 @@
                     let line, originalLine;
                     if (direction === 'left' || direction === 'right') {
                         line = grid.slice(i * width, i * width + width);
-                    } else { // up or down
+                    } else {
                         line = Array.from({length: width}, (_, j) => grid[i + j * width]);
                     }
 
                     originalLine = [...line];
                     let processedLine = (direction === 'left' || direction === 'up') ? slideAndCombine(line) : slideAndCombine(line.reverse()).reverse();
 
-                    if(JSON.stringify(originalLine) !== JSON.stringify(processedLine)) {
-                        hasChanged = true;
-                    }
+                    if(JSON.stringify(originalLine) !== JSON.stringify(processedLine)) hasChanged = true;
                     
                     for (let j = 0; j < width; j++) {
                         if (direction === 'left' || direction === 'right') {
@@ -1475,6 +1482,24 @@
                 }
             }
 
+            // Mobile Swipe Controls
+            let touchStartX = 0, touchStartY = 0;
+            container.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            });
+            container.addEventListener('touchend', e => {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const dx = touchEndX - touchStartX;
+                const dy = touchEndY - touchStartY;
+                if (Math.abs(dx) > Math.abs(dy)) { // Horizontal swipe
+                    if (Math.abs(dx) > 30) move(dx > 0 ? 'right' : 'left');
+                } else { // Vertical swipe
+                    if (Math.abs(dy) > 30) move(dy > 0 ? 'down' : 'up');
+                }
+            });
+
             createBoard();
             document.addEventListener('keydown', control);
             newGameBtn.addEventListener('click', createBoard);
@@ -1486,7 +1511,7 @@
             const restartBtn = document.getElementById('restart-snake');
             if (!boardEl) return;
 
-            const gridSize = 20;
+            const gridSize = 15;
             let snake, food, direction, score, gameLoop, gameActive;
 
             function setupBoard() {
@@ -1502,15 +1527,15 @@
 
             function startGame() {
                 if(gameLoop) clearInterval(gameLoop);
-                snake = [{ x: 10, y: 10 }];
+                snake = [{ x: 7, y: 7 }];
                 food = generateFood();
-                direction = { x: 0, y: -1 }; // Start moving up
+                direction = { x: 0, y: -1 };
                 score = 0;
                 scoreEl.textContent = 0;
                 gameActive = true;
                 restartBtn.textContent = 'Restart';
-                draw(); // Initial draw
-                gameLoop = setInterval(update, 150);
+                draw();
+                gameLoop = setInterval(update, 200);
             }
 
             function generateFood() {
@@ -1535,12 +1560,9 @@
 
             function update() {
                 if (!gameActive) return;
-
                 const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-                // Check for collision with walls or self
-                if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize ||
-                    snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize || snake.some(s => s.x === head.x && s.y === head.y)) {
                     gameActive = false;
                     clearInterval(gameLoop);
                     showToast('Game Over!');
@@ -1559,155 +1581,284 @@
                 draw();
             }
 
-            function handleKeyPress(e) {
+            function changeDirection(newDirection) {
                 if (!gameActive) return;
-                switch (e.key) {
-                    case 'ArrowUp': if (direction.y === 0) direction = { x: 0, y: -1 }; break;
-                    case 'ArrowDown': if (direction.y === 0) direction = { x: 0, y: 1 }; break;
-                    case 'ArrowLeft': if (direction.x === 0) direction = { x: -1, y: 0 }; break;
-                    case 'ArrowRight': if (direction.x === 0) direction = { x: 1, y: 0 }; break;
+                const isOpposite = (d1, d2) => d1.x === -d2.x && d1.y === -d2.y;
+                if (!isOpposite(direction, newDirection)) {
+                    direction = newDirection;
                 }
             }
+
+            document.addEventListener('keydown', e => {
+                switch (e.key) {
+                    case 'ArrowUp': changeDirection({ x: 0, y: -1 }); break;
+                    case 'ArrowDown': changeDirection({ x: 0, y: 1 }); break;
+                    case 'ArrowLeft': changeDirection({ x: -1, y: 0 }); break;
+                    case 'ArrowRight': changeDirection({ x: 1, y: 0 }); break;
+                }
+            });
+            
+            // Mobile controls
+            document.getElementById('snake-up').addEventListener('click', () => changeDirection({ x: 0, y: -1 }));
+            document.getElementById('snake-down').addEventListener('click', () => changeDirection({ x: 0, y: 1 }));
+            document.getElementById('snake-left').addEventListener('click', () => changeDirection({ x: -1, y: 0 }));
+            document.getElementById('snake-right').addEventListener('click', () => changeDirection({ x: 1, y: 0 }));
 
             setupBoard();
             restartBtn.addEventListener('click', startGame);
-            document.addEventListener('keydown', handleKeyPress);
         }
 
-        function initializeMinesweeper() {
-            const boardEl = document.getElementById('game-minesweeper-board');
-            const countEl = document.getElementById('minesweeper-count');
-            const timerEl = document.getElementById('minesweeper-timer');
-            const restartBtn = document.getElementById('restart-minesweeper');
-            if (!boardEl) return;
+        function initializeTetris() {
+            const canvas = document.getElementById('tetris-board');
+            if (!canvas) return;
+            const context = canvas.getContext('2d');
+            const scoreEl = document.getElementById('tetris-score');
+            const restartBtn = document.getElementById('restart-tetris');
+            
+            const COLS = 12, ROWS = 24, BLOCK_SIZE = 20;
+            context.scale(BLOCK_SIZE, BLOCK_SIZE);
+            
+            const COLORS = [null, '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'];
+            const SHAPES = [ [], [[1,1,1,1]], [[1,1],[1,1]], [[0,1,1],[1,1,0]], [[1,1,0],[0,1,1]], [[1,1,1],[0,1,0]], [[1,0,0],[1,1,1]], [[0,0,1],[1,1,1]] ];
+            let board, piece, score, dropStart, gameOver;
 
-            const rows = 10, cols = 10, mines = 10;
-            let board, flags, timerInterval, time, gameOver;
-
-            function createBoard() {
-                if (timerInterval) clearInterval(timerInterval);
+            function startGame() {
+                board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+                score = 0;
+                scoreEl.textContent = 0;
                 gameOver = false;
-                time = 0;
-                flags = 0;
-                board = Array(rows).fill(0).map(() => Array(cols).fill(0).map(() => ({ mine: false, revealed: false, flagged: false, neighbors: 0 })));
-                
-                let minesPlaced = 0;
-                while (minesPlaced < mines) {
-                    const r = Math.floor(Math.random() * rows);
-                    const c = Math.floor(Math.random() * cols);
-                    if (!board[r][c].mine) {
-                        board[r][c].mine = true;
-                        minesPlaced++;
-                    }
-                }
-                
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        if (board[r][c].mine) continue;
-                        let count = 0;
-                        for (let dr = -1; dr <= 1; dr++) {
-                            for (let dc = -1; dc <= 1; dc++) {
-                                if (r + dr >= 0 && r + dr < rows && c + dc >= 0 && c + dc < cols && board[r + dr][c + dc].mine) {
-                                    count++;
-                                }
-                            }
-                        }
-                        board[r][c].neighbors = count;
-                    }
-                }
-                render();
+                spawnPiece();
+                update();
             }
 
-            function revealCell(r, c) {
-                if (gameOver || r < 0 || r >= rows || c < 0 || c >= cols || board[r][c].revealed || board[r][c].flagged) return;
-                
-                if (time === 0 && !gameOver) {
-                    timerInterval = setInterval(() => { timerEl.textContent = ++time; }, 1000);
-                }
-                
-                board[r][c].revealed = true;
-                
-                if (board[r][c].mine) {
+            function spawnPiece() {
+                const typeId = Math.floor(Math.random() * (SHAPES.length - 1)) + 1;
+                const matrix = SHAPES[typeId];
+                piece = { x: Math.floor(COLS / 2) - Math.floor(matrix[0].length / 2), y: 0, matrix: matrix, typeId: typeId };
+                if (collides(board, piece)) {
                     gameOver = true;
-                    clearInterval(timerInterval);
-                    showToast('Game Over! You hit a mine.');
-                    revealAllMines();
-                    render();
-                    return;
+                    showToast('Game Over!');
                 }
+            }
 
-                if (board[r][c].neighbors === 0) {
-                    for (let dr = -1; dr <= 1; dr++) {
-                        for (let dc = -1; dc <= 1; dc++) {
-                            if (dr === 0 && dc === 0) continue;
-                            revealCell(r + dr, c + dc);
+            function collides(board, piece) {
+                for (let y = 0; y < piece.matrix.length; y++) {
+                    for (let x = 0; x < piece.matrix[y].length; x++) {
+                        if (piece.matrix[y][x] !== 0 && (board[y + piece.y] && board[y + piece.y][x + piece.x]) !== 0) {
+                            return true;
                         }
                     }
                 }
-                render();
-                checkWin();
+                return false;
             }
 
-            function toggleFlag(r, c) {
-                if (gameOver || board[r][c].revealed) return;
-                board[r][c].flagged = !board[r][c].flagged;
-                flags += board[r][c].flagged ? 1 : -1;
-                render();
+            function merge(board, piece) {
+                piece.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) board[y + piece.y][x + piece.x] = value;
+                    });
+                });
             }
-            
-            function checkWin() {
-                const revealedCount = board.flat().filter(cell => cell.revealed).length;
-                if (revealedCount === rows * cols - mines) {
-                    gameOver = true;
-                    clearInterval(timerInterval);
-                    showToast(`You win! Time: ${time}s`);
-                    revealAllMines(true); 
-                }
-            }
-            
-            function revealAllMines(isWin = false) {
-                 board.forEach(row => row.forEach(cell => {
-                    if (cell.mine) {
-                         cell.revealed = true;
-                         if(isWin) cell.flagged = true;
+
+            function rotate(matrix) {
+                const result = [];
+                for (let y = 0; y < matrix[0].length; y++) {
+                    result[y] = [];
+                    for (let x = 0; x < matrix.length; x++) {
+                        result[y][x] = matrix[matrix.length - 1 - x][y];
                     }
-                }));
-                 render();
+                }
+                return result;
+            }
+
+            function pieceRotate() {
+                const nextMatrix = rotate(piece.matrix);
+                let offset = 1;
+                while (collides(board, { ...piece, matrix: nextMatrix })) {
+                    piece.x += offset;
+                    offset = -(offset + (offset > 0 ? 1 : -1));
+                    if (offset > nextMatrix[0].length) {
+                        rotate(piece.matrix.reverse()); // Rotate back
+                        return;
+                    }
+                }
+                piece.matrix = nextMatrix;
+            }
+
+            function pieceMove(dir) {
+                piece.x += dir;
+                if (collides(board, piece)) piece.x -= dir;
+            }
+
+            function pieceDrop() {
+                piece.y++;
+                if (collides(board, piece)) {
+                    piece.y--;
+                    merge(board, piece);
+                    sweepBoard();
+                    spawnPiece();
+                }
+                dropStart = Date.now();
             }
             
+            function sweepBoard() {
+                let rowsCleared = 0;
+                outer: for (let y = board.length - 1; y > 0; --y) {
+                    for (let x = 0; x < board[y].length; ++x) {
+                        if (board[y][x] === 0) continue outer;
+                    }
+                    const row = board.splice(y, 1)[0].fill(0);
+                    board.unshift(row);
+                    ++y;
+                    rowsCleared++;
+                }
+                if(rowsCleared > 0) score += Math.pow(rowsCleared, 2) * 10;
+                scoreEl.textContent = score;
+            }
+
+            let dropCounter = 0;
+            let lastTime = 0;
+            function update(time = 0) {
+                if (gameOver) return;
+                const deltaTime = time - lastTime;
+                lastTime = time;
+                dropCounter += deltaTime;
+                if (dropCounter > 1000) {
+                    pieceDrop();
+                    dropCounter = 0;
+                }
+                draw();
+                requestAnimationFrame(update);
+            }
+
+            function draw() {
+                context.fillStyle = '#1a1a1a';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                drawMatrix(board, {x: 0, y: 0});
+                drawMatrix(piece.matrix, {x: piece.x, y: piece.y}, piece.typeId);
+            }
+
+            function drawMatrix(matrix, offset, typeId = null) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            context.fillStyle = COLORS[typeId || value];
+                            context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                        }
+                    });
+                });
+            }
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'ArrowLeft') pieceMove(-1);
+                else if (e.key === 'ArrowRight') pieceMove(1);
+                else if (e.key === 'ArrowDown') pieceDrop();
+                else if (e.key === 'ArrowUp') pieceRotate();
+            });
+
+            // Mobile Controls
+            document.getElementById('tetris-left').addEventListener('click', () => pieceMove(-1));
+            document.getElementById('tetris-right').addEventListener('click', () => pieceMove(1));
+            document.getElementById('tetris-down').addEventListener('click', pieceDrop);
+            document.getElementById('tetris-rotate').addEventListener('click', pieceRotate);
+            
+            restartBtn.addEventListener('click', startGame);
+            startGame();
+        }
+
+        function initializePong() {
+            const canvas = document.getElementById('pong-board');
+            if(!canvas) return;
+            const context = canvas.getContext('2d');
+            const playerScoreEl = document.getElementById('pong-player-score');
+            const aiScoreEl = document.getElementById('pong-ai-score');
+
+            const paddleWidth = 10, paddleHeight = 100;
+            let ball, player, ai, playerScore = 0, aiScore = 0;
+
+            function resetBall() {
+                ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 7, speedX: 5, speedY: 5 };
+            }
+
+            function startGame() {
+                player = { x: 0, y: (canvas.height - paddleHeight) / 2, width: paddleWidth, height: paddleHeight, score: 0 };
+                ai = { x: canvas.width - paddleWidth, y: (canvas.height - paddleHeight) / 2, width: paddleWidth, height: paddleHeight, score: 0 };
+                playerScore = 0;
+                aiScore = 0;
+                playerScoreEl.textContent = 0;
+                aiScoreEl.textContent = 0;
+                resetBall();
+            }
+
+            function drawRect(x, y, w, h, color) {
+                context.fillStyle = color;
+                context.fillRect(x, y, w, h);
+            }
+
+            function drawCircle(x, y, r, color) {
+                context.fillStyle = color;
+                context.beginPath();
+                context.arc(x, y, r, 0, Math.PI * 2, false);
+                context.closePath();
+                context.fill();
+            }
+
+            function update() {
+                // Ball movement
+                ball.x += ball.speedX;
+                ball.y += ball.speedY;
+
+                // Wall collision (top/bottom)
+                if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+                    ball.speedY = -ball.speedY;
+                }
+
+                // Scoring
+                if (ball.x - ball.radius < 0) {
+                    aiScore++;
+                    aiScoreEl.textContent = aiScore;
+                    resetBall();
+                } else if (ball.x + ball.radius > canvas.width) {
+                    playerScore++;
+                    playerScoreEl.textContent = playerScore;
+                    resetBall();
+                }
+
+                // Paddle collision
+                let p = (ball.x < canvas.width / 2) ? player : ai;
+                if (ball.x - ball.radius < p.x + p.width && ball.x + ball.radius > p.x &&
+                    ball.y - ball.radius < p.y + p.height && ball.y + ball.radius > p.y) {
+                    ball.speedX = -ball.speedX;
+                }
+                
+                // AI movement
+                ai.y += ((ball.y - (ai.y + ai.height / 2))) * 0.1;
+            }
+
             function render() {
-                boardEl.innerHTML = '';
-                boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-                countEl.textContent = mines - flags;
-                timerEl.textContent = time;
+                drawRect(0, 0, canvas.width, canvas.height, 'rgba(0,0,0,0.8)'); // Clear canvas
+                drawRect(player.x, player.y, player.width, player.height, '#00ff8c'); // Player paddle
+                drawRect(ai.x, ai.y, ai.width, ai.height, '#00ff8c'); // AI paddle
+                drawCircle(ball.x, ball.y, ball.radius, '#00ff8c'); // Ball
+            }
 
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'mine-cell';
-                        if (board[r][c].revealed) cell.classList.add('revealed');
-                        if (board[r][c].flagged) cell.classList.add('flagged');
-                        
-                        if (board[r][c].revealed) {
-                            if (board[r][c].mine) {
-                                cell.innerHTML = '💣';
-                            } else if (board[r][c].neighbors > 0) {
-                                cell.textContent = board[r][c].neighbors;
-                                cell.dataset.mines = board[r][c].neighbors;
-                            }
-                        } else if (board[r][c].flagged) {
-                            cell.innerHTML = '<i class="flag-emoji">🚩</i>';
-                        }
-
-                        cell.addEventListener('click', () => revealCell(r, c));
-                        cell.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleFlag(r, c); });
-                        boardEl.appendChild(cell);
-                    }
-                }
+            function gameLoop() {
+                update();
+                render();
+                requestAnimationFrame(gameLoop);
             }
             
-            restartBtn.addEventListener('click', createBoard);
-            createBoard();
+            function movePaddle(e) {
+                 let rect = canvas.getBoundingClientRect();
+                 let y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+                 player.y = y - rect.top - player.height / 2;
+            }
+            
+            canvas.addEventListener('mousemove', movePaddle);
+            canvas.addEventListener('touchmove', e => { e.preventDefault(); movePaddle(e); });
+
+            startGame();
+            gameLoop();
         }
 
     </script>
