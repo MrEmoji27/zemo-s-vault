@@ -823,7 +823,7 @@
 
         async function callGemini(prompt, maxRetries = 3) {
             showLoading();
-            const apiKey = ;
+            const apiKey = "AIzaSyA1CycUdAie4Y-bXhXp3B60DVpsp0CIB8g"; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
             let attempt = 0;
