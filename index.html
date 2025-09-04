@@ -462,6 +462,7 @@
                     <h3 class="text-xl font-bold text-center text-[#00ff8c]">Pong</h3>
                      <div class="flex justify-center items-center my-2 gap-8">
                          <div class="text-lg">Player: <span id="pong-player-score">0</span></div>
+                         <button id="restart-pong" class="bg-[#00ff8c] text-black font-bold px-4 py-2 rounded-lg">Start Game</button>
                          <div class="text-lg">AI: <span id="pong-ai-score">0</span></div>
                      </div>
                      <canvas id="pong-board" width="600" height="400" class="mx-auto max-w-full"></canvas>
@@ -823,7 +824,13 @@
 
         async function callGemini(prompt, maxRetries = 3) {
             showLoading();
-            const apiKey = " "; 
+            // IMPORTANT: API Key is removed for security. 
+            // This needs to be handled via a backend proxy in a real application.
+            const apiKey = ""; 
+            if (!apiKey) {
+                geminiModalContent.innerHTML = `<h2 class="text-xl text-yellow-400">Configuration Needed</h2><p>The API key is missing. This feature is disabled in the source code for security reasons. To make this work, you must set up a backend proxy to handle API requests securely.</p>`;
+                return null;
+            }
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
             let attempt = 0;
@@ -1396,7 +1403,7 @@
             document.getElementById('tetris-down').addEventListener('click', pieceDrop);
             document.getElementById('tetris-rotate').addEventListener('click', pieceRotate);
             restartBtn.addEventListener('click', startGame);
-            startGame();
+            // Removed startGame() from here to prevent auto-start
         }
 
         function initializePong() {
@@ -1405,8 +1412,10 @@
             const context = canvas.getContext('2d');
             const playerScoreEl = document.getElementById('pong-player-score');
             const aiScoreEl = document.getElementById('pong-ai-score');
+            const restartBtn = document.getElementById('restart-pong');
+            
             const paddleWidth = 10, paddleHeight = 100;
-            let ball, player, ai, playerScore = 0, aiScore = 0;
+            let ball, player, ai, playerScore = 0, aiScore = 0, gameRunning = false;
 
             function resetBall() { ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 7, speedX: 5, speedY: 5 }; }
             function startGame() {
@@ -1414,6 +1423,7 @@
                 ai = { x: canvas.width - paddleWidth, y: (canvas.height - paddleHeight) / 2, width: paddleWidth, height: paddleHeight, score: 0 };
                 playerScore = 0; aiScore = 0; playerScoreEl.textContent = 0; aiScoreEl.textContent = 0;
                 resetBall();
+                render(); // Draw initial state
             }
             function drawRect(x, y, w, h, color) { context.fillStyle = color; context.fillRect(x, y, w, h); }
             function drawCircle(x, y, r, color) { context.fillStyle = color; context.beginPath(); context.arc(x, y, r, 0, Math.PI * 2, false); context.closePath(); context.fill(); }
@@ -1423,7 +1433,12 @@
                 if (ball.x - ball.radius < 0) { aiScore++; aiScoreEl.textContent = aiScore; resetBall(); } 
                 else if (ball.x + ball.radius > canvas.width) { playerScore++; playerScoreEl.textContent = playerScore; resetBall(); }
                 let p = (ball.x < canvas.width / 2) ? player : ai;
-                if (ball.x - ball.radius < p.x + p.width && ball.x + ball.radius > p.x && ball.y - ball.radius < p.y + p.height && ball.y + ball.radius > p.y) ball.speedX = -ball.speedX;
+                if (ball.x - ball.radius < p.x + p.width && ball.x + ball.radius > p.x && ball.y - ball.radius < p.y + p.height && ball.y + ball.radius > p.y) {
+                    ball.speedX = -ball.speedX;
+                    // Add a slight angle based on where it hits the paddle
+                    let deltaY = ball.y - (p.y + p.height / 2);
+                    ball.speedY = deltaY * 0.35;
+                }
                 ai.y += ((ball.y - (ai.y + ai.height / 2))) * 0.1;
             }
             function render() {
@@ -1432,11 +1447,33 @@
                 drawRect(ai.x, ai.y, ai.width, ai.height, '#00ff8c');
                 drawCircle(ball.x, ball.y, ball.radius, '#00ff8c');
             }
-            function gameLoop() { update(); render(); requestAnimationFrame(gameLoop); }
-            function movePaddle(e) { let rect = canvas.getBoundingClientRect(); let y = e.clientY || (e.touches ? e.touches[0].clientY : 0); player.y = y - rect.top - player.height / 2; }
+            function gameLoop() { 
+                if(!gameRunning) return;
+                update(); 
+                render(); 
+                requestAnimationFrame(gameLoop); 
+            }
+            function movePaddle(e) { 
+                if(!gameRunning) return;
+                let rect = canvas.getBoundingClientRect(); 
+                let y = e.clientY || (e.touches ? e.touches[0].clientY : 0); 
+                player.y = y - rect.top - player.height / 2;
+                if(player.y < 0) player.y = 0;
+                if(player.y > canvas.height - player.height) player.y = canvas.height - player.height;
+            }
             canvas.addEventListener('mousemove', movePaddle);
             canvas.addEventListener('touchmove', e => { e.preventDefault(); movePaddle(e); });
-            startGame(); gameLoop();
+            
+            restartBtn.addEventListener('click', () => {
+                startGame();
+                restartBtn.textContent = 'Restart';
+                if (!gameRunning) {
+                    gameRunning = true;
+                    gameLoop();
+                }
+            });
+
+            startGame(); // Set initial state without starting the loop
         }
 
         // --- EVENT LISTENERS ---
@@ -1503,4 +1540,3 @@
     </script>
 </body>
 </html>
-
